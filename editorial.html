@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-darker text-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE TOUCH MAGAZINE | Editorial</title>
+    <meta name="description" content="Editorials and visual stories from THE TOUCH MAGAZINE.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#c8a97e',
+                        dark: '#111111',
+                        darker: '#0a0a0a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-sans antialiased text-gray-200 overflow-x-hidden selection:bg-brand selection:text-white relative">
+    
+    <div class="grain-overlay"></div>
+
+    <!-- Navigation (solid bg for interior pages) -->
+    <nav id="navbar" class="fixed w-full z-40 transition-all duration-500 py-4 px-6 lg:px-12 flex justify-between items-center glass-panel">
+        <a href="index.html" class="font-serif text-2xl tracking-widest text-white uppercase z-50">The Touch</a>
+        
+        <div class="hidden md:flex items-center space-x-10 text-sm tracking-widest uppercase font-medium">
+            <a href="index.html" class="hover:text-brand transition-colors">Home</a>
+            <a href="editorial.html" class="text-brand transition-colors">Editorial</a>
+            <a href="about.html" class="hover:text-brand transition-colors">About</a>
+        </div>
+        
+        <button id="mobile-menu-btn" class="md:hidden z-50 text-white focus:outline-none">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Fullscreen Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-darker transform translate-x-full transition-transform duration-700 ease-in-out flex flex-col justify-center items-center">
+        <button id="close-menu-btn" class="absolute top-8 right-8 text-white hover:text-brand transition-colors">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="flex flex-col space-y-8 text-center font-serif text-4xl">
+            <a href="index.html" class="text-gray-400 hover:text-white transition-colors">Home</a>
+            <a href="editorial.html" class="text-brand hover:text-white transition-colors">Editorial</a>
+            <a href="about.html" class="text-gray-400 hover:text-white transition-colors">About</a>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="pt-40 pb-20 px-6 lg:px-12 max-w-screen-xl mx-auto text-center fade-up">
+        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl mb-6">Editorial</h1>
+        <p class="text-gray-400 max-w-xl mx-auto text-lg font-light leading-relaxed">
+            Curated narratives showcasing the vanguard of fashion, design, and culture through a cinematic lens.
+        </p>
+    </header>
+
+    <!-- Editorial Gallery -->
+    <main class="pb-32 px-6 lg:px-12 max-w-screen-2xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            
+            <!-- Article 1 -->
+            <article class="fade-up group cursor-pointer" style="transition-delay: 0.1s;">
+                <div class="img-hover-zoom w-full h-[60vh] md:h-[50vh] bg-dark relative mb-6">
+                    <img src="images/hero.png" alt="Avant-Garde Focus" class="w-full h-full object-cover">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-brand text-xs tracking-widest uppercase mb-2 block">Fashion &mdash; Vol 01</span>
+                        <h3 class="font-serif text-2xl text-white group-hover:text-brand transition-colors duration-300">The Urban Canvas</h3>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="fade-up group cursor-pointer" style="transition-delay: 0.2s;">
+                <div class="img-hover-zoom w-full h-[60vh] md:h-[50vh] bg-dark relative mb-6">
+                    <img src="images/architecture.png" alt="Concrete Minimal" class="w-full h-full object-cover">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-brand text-xs tracking-widest uppercase mb-2 block">Space &mdash; Vol 01</span>
+                        <h3 class="font-serif text-2xl text-white group-hover:text-brand transition-colors duration-300">Form & Function</h3>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="fade-up group cursor-pointer" style="transition-delay: 0.3s;">
+                <div class="img-hover-zoom w-full h-[60vh] md:h-[50vh] bg-dark relative mb-6">
+                    <img src="images/lifestyle.png" alt="Café Aesthetics" class="w-full h-full object-cover">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-brand text-xs tracking-widest uppercase mb-2 block">Lifestyle &mdash; Vol 01</span>
+                        <h3 class="font-serif text-2xl text-white group-hover:text-brand transition-colors duration-300">Quiet Contemplation</h3>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+        
+        <div class="mt-24 text-center fade-up">
+            <button class="btn-magnetic border border-white/30 px-10 py-4 text-xs tracking-widest uppercase hover:bg-white hover:text-dark transition-colors duration-300">Load More</button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-darker py-16 px-6 lg:px-12 border-t border-white/5">
+        <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-light">
+            <p>&copy; 2026 THE TOUCH MAGAZINE. All rights reserved.</p>
+            <div class="space-x-4 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white transition-colors">Instagram</a>
+                <a href="#" class="hover:text-white transition-colors">Pinterest</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

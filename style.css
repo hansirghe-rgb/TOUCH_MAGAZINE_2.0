@@ -1,0 +1,72 @@
+/* Add global styles for the premium editorial theme */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background-color: #9B2C2C; /* text-red */
+    color: #ffffff;
+}
+
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #EBE7E0; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #A0A0A0; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #15202B; 
+}
+
+/* Layout Utilities */
+.news-line {
+    border-top: 1px solid rgba(21, 32, 43, 0.15); /* light navy border */
+}
+
+.news-line-thick {
+    border-top: 3px solid #15202B; /* deep navy thick border */
+}
+
+/* Image Hover Zoom Utility */
+.hover-zoom {
+    overflow: hidden;
+}
+
+.hover-zoom img {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-zoom:hover img {
+    transform: scale(1.03);
+}
+
+/* Animations */
+.fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hero Overlay - Richer, but still transparent to show Colombo background */
+.hero-gradient {
+    background: linear-gradient(to right, rgba(235, 231, 224, 0.95) 0%, rgba(235, 231, 224, 0.8) 45%, rgba(235, 231, 224, 0.15) 100%);
+}
+
+@media (max-width: 768px) {
+    .Hero-gradient {
+        background: linear-gradient(to top, rgba(235, 231, 224, 1) 0%, rgba(235, 231, 224, 0.85) 60%, rgba(235, 231, 224, 0.25) 100%);
+    }
+}
