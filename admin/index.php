@@ -56,9 +56,10 @@ $messages_count = $stmt->fetch()['total'];
     <div class="bg-white border border-gray-300 p-6">
         <h3 class="font-serif text-xl font-bold text-navy mb-4">Quick Protocols</h3>
         <div class="space-y-3 font-medium text-sm text-navy/80">
-            <a href="articles.php?action=new" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Compose New Article</a>
-            <a href="issues.php?action=new" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Publish Monthly Digital Issue</a>
-            <a href="settings.php" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Update Campus Partner Logo</a>
+            <a href="articles.php?action=new" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Compose New Article (For Top Stories & Columns)</a>
+            <a href="issues.php?action=new" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Publish Monthly Digital Issue (.pdf)</a>
+            <a href="podcasts.php?action=new" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Upload Video/Podcast Broadcast</a>
+            <a href="settings.php" class="block bg-light p-3 border border-gray-300 hover:bg-navy hover:text-white transition-colors">&plus; Update Campus Partner Logo & Background Image</a>
         </div>
     </div>
     

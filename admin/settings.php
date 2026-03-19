@@ -15,11 +15,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $path = str_replace('../', '', $upload['path']); // relative to frontend
             $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = 'rghe_logo'");
             $stmt->execute([$path]);
-            $message = "Logo updated successfully. ";
+            $message .= "Logo updated successfully. ";
         } else {
-            $message = $upload['error'];
+            $message .= $upload['error'] . " ";
         }
     }
+
+    // Handling Background Image Upload
+    if (isset($_FILES['hero_bg_image']) && $_FILES['hero_bg_image']['error'] === UPLOAD_ERR_OK) {
+        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
+        $upload = upload_secure_file($_FILES['hero_bg_image'], '../uploads/images', $allowed);
+        if ($upload['success']) {
+            $path = str_replace('../', '', $upload['path']); // relative to frontend
+            
+            // Check if setting exists
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM site_settings WHERE setting_key = 'hero_bg_image'");
+            $stmt->execute();
+            if ($stmt->fetchColumn() > 0) {
+                $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = 'hero_bg_image'");
+                $stmt->execute([$path]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value, description) VALUES ('hero_bg_image', ?, 'Homepage Hero Background Image')");
+                $stmt->execute([$path]);
+            }
+            $message .= "Background Image updated successfully. ";
+        } else {
+            $message .= $upload['error'] . " ";
+        }
+    }
+
 
     // Handle string settings
     $settings_to_update = [
@@ -85,16 +109,25 @@ while ($row = $stmt->fetch()) {
          <div class="space-y-6">
              <div>
                  <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Hero Headline</label>
-                 <input type="text" name="hero_headline" value="<?= htmlspecialchars($settings['hero_headline']['setting_value']) ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
+                 <input type="text" name="hero_headline" value="<?= htmlspecialchars($settings['hero_headline']['setting_value'] ?? '') ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
                  <p class="text-[10px] text-navy/50 mt-1 uppercase tracking-widest">You may use basic HTML tags like &lt;br&gt; or &lt;span class="italic font-normal"&gt; for styling.</p>
              </div>
              <div>
                  <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Hero Subheading</label>
-                 <input type="text" name="hero_subheading" value="<?= htmlspecialchars($settings['hero_subheading']['setting_value']) ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
+                 <input type="text" name="hero_subheading" value="<?= htmlspecialchars($settings['hero_subheading']['setting_value'] ?? '') ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
              </div>
              <div>
                  <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Hero Descriptive Text</label>
-                 <textarea name="hero_text" rows="3" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy resize-none"><?= htmlspecialchars($settings['hero_text']['setting_value']) ?></textarea>
+                 <textarea name="hero_text" rows="3" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy resize-none"><?= htmlspecialchars($settings['hero_text']['setting_value'] ?? '') ?></textarea>
+             </div>
+             <div>
+                 <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Background Image (.png, .jpg, .webp)</label>
+                 <?php if (!empty($settings['hero_bg_image']['setting_value'])): ?>
+                    <div class="mb-2 w-48 h-24 bg-light border border-gray-300 flex items-center justify-center">
+                        <img src="../<?= htmlspecialchars($settings['hero_bg_image']['setting_value']) ?>" alt="Background Preview" class="max-w-full max-h-full object-cover">
+                    </div>
+                 <?php endif; ?>
+                 <input type="file" name="hero_bg_image" accept=".png,.jpg,.jpeg,.webp" class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-navy file:text-paper hover:file:bg-red file:transition-colors bg-light border border-gray-300 p-2 cursor-pointer">
              </div>
          </div>
     </div>
