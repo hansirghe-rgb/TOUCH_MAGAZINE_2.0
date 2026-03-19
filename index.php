@@ -4,7 +4,7 @@ require_once 'config/database.php';
 // Fetch Homepage Settings
 $logo_path = get_setting($pdo, 'rghe_logo', 'images/rghe_logo.png');
 $partner_text = get_setting($pdo, 'footer_partner_text', 'Educational Partner RGHE');
-$hero_headline = get_setting($pdo, 'hero_headline', 'The Pulse <br><span class="italic font-normal">of</span> Sri Lanka.');
+$hero_headline = get_setting($pdo, 'hero_headline', 'The Pulse <br><span class="italic font-normal">of</span> Humility.');
 $hero_subheading = get_setting($pdo, 'hero_subheading', 'Inside The City');
 $hero_text = get_setting($pdo, 'hero_text', 'A modern monthly magazine blending insightful journalism with stunning visual storytelling. We decode politics, economy, travel, and culture from our headquarters in Colombo to the world.');
 $hero_bg_image = get_setting($pdo, 'hero_bg_image', 'images/politics.png');
@@ -113,14 +113,7 @@ $latest_podcast = $stmt->fetch();
         </div>
     </div>
 
-    <!-- Magazine Issue Upload Portal Strip (For Editors) -->
-    <div class="bg-navy text-paper text-center py-2 px-4 text-[10px] md:text-xs font-semibold tracking-wider flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
-        <span>Administration Protocol:</span>
-        <label for="issue-upload" class="cursor-pointer border border-white/30 px-3 py-1 uppercase tracking-widest hover:bg-white hover:text-navy transition-colors">
-            Upload Monthly Issue
-        </label>
-        <input type="file" id="issue-upload" accept="image/*" class="hidden">
-    </div>
+
 
     <!-- Hero Section -->
     <header class="relative min-h-[90vh] w-full overflow-hidden flex items-center bg-light border-b border-gray-300">
@@ -352,10 +345,6 @@ $latest_podcast = $stmt->fetch();
                 <div class="bg-paper p-3 w-40 h-24 mb-4 flex items-center justify-center relative shadow-inner">
                     <img id="campus-logo" src="<?= htmlspecialchars($logo_path) ?>" alt="RGHE Campus Logo" class="max-h-full max-w-full object-contain opacity-50 transition-opacity duration-300">
                 </div>
-                <label for="logo-upload" class="cursor-pointer border border-paper/30 text-paper px-4 py-2 text-[10px] uppercase font-bold tracking-widest hover:bg-paper hover:text-navy transition-colors">
-                    Upload RGHE Logo
-                </label>
-                <input type="file" id="logo-upload" accept="image/*" class="hidden">
             </div>
 
         </div>

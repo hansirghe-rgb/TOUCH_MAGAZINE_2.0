@@ -63,12 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_contact'])) {
                 <div class="mt-12 space-y-8">
                     <div>
                         <h4 class="font-sans font-black text-navy uppercase tracking-widest text-xs mb-2">Office Address</h4>
-                        <p class="text-navy/70 font-medium">The Touch Studios<br>World Trade Center, Echelon Square<br>Colombo 01, Sri Lanka</p>
+                        <p class="text-navy/70 font-medium">The Touch Studios<br>102 Bauddhaloka Mawatha<br>Colombo 04</p>
                     </div>
 
                     <div class="news-line pt-8 border-gray-300">
                         <h4 class="font-sans font-black text-navy uppercase tracking-widest text-xs mb-2">Direct Lines</h4>
-                        <p class="text-navy/70 font-medium mb-1"><span class="font-bold text-navy w-24 inline-block">General:</span> +94 11 234 5678</p>
+                        <p class="text-navy/70 font-medium mb-1"><span class="font-bold text-navy w-24 inline-block">General:</span> +94 11 233 3000</p>
                         <p class="text-navy/70 font-medium mb-1"><span class="font-bold text-navy w-24 inline-block">Editorial:</span> editor@thetouch.lk</p>
                         <p class="text-navy/70 font-medium"><span class="font-bold text-navy w-24 inline-block">Advertising:</span> ads@thetouch.lk</p>
                     </div>

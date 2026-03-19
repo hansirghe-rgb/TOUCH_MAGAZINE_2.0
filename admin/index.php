@@ -1,6 +1,5 @@
 <?php
 // admin/index.php
-session_start();
 require_once '../config/database.php';
 require_once 'includes/header.php'; // Will enforce login
 

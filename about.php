@@ -38,7 +38,7 @@
     <header class="max-w-7xl mx-auto px-4 sm:px-8 pt-20 pb-16 fade-up">
         <div class="max-w-3xl">
             <span class="text-red font-bold uppercase tracking-widest text-xs mb-6 block">Our Origin</span>
-            <h1 class="font-serif text-5xl md:text-7xl font-black text-navy mb-10 leading-tight">Insightful journalism,<br>born in <i class="font-normal text-red">Colombo</i>.</h1>
+            <h1 class="font-serif text-5xl md:text-7xl font-black text-navy mb-10 leading-tight">Insightful Journalism Born Through <i class="font-normal text-red">Humility</i>.</h1>
         </div>
     </header>
 
