@@ -34,6 +34,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'new') {
     }
 }
 
+// Fetch article if editing
+$edit_article = null;
+if ($action === 'edit' && isset($_GET['id'])) {
+    $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $edit_article = $stmt->fetch();
+    if (!$edit_article) $action = 'list';
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'edit') {
+    $id = $_POST['id'];
+    $category_id = $_POST['category_id'];
+    $title = $_POST['title'];
+    $subtitle = $_POST['subtitle'];
+    $content = $_POST['content'];
+    $author_name = $_POST['author_name'];
+    $publish_date = $_POST['publish_date'] ?: date('Y-m-d');
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+    $is_editor_pick = isset($_POST['is_editor_pick']) ? 1 : 0;
+    $status = $_POST['status'];
+    
+    // Default to existing image
+    $stmt = $pdo->prepare("SELECT image_path FROM articles WHERE id = ?");
+    $stmt->execute([$id]);
+    $image_path = $stmt->fetchColumn();
+
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $upload = upload_secure_file($_FILES['image'], '../uploads/images', ['image/jpeg', 'image/png']);
+        if ($upload['success']) $image_path = str_replace('../', '', $upload['path']);
+    }
+
+    if (!empty($title) && !empty($content)) {
+        $stmt = $pdo->prepare("UPDATE articles SET category_id = ?, title = ?, subtitle = ?, content = ?, image_path = ?, author_name = ?, publish_date = ?, is_featured = ?, is_editor_pick = ?, status = ? WHERE id = ?");
+        $stmt->execute([$category_id, $title, $subtitle, $content, $image_path, $author_name, $publish_date, $is_featured, $is_editor_pick, $status, $id]);
+        $message = "Article updated successfully.";
+        $action = 'list';
+    } else {
+        $message = "Title and Content are required to save changes.";
+    }
+}
+
 // Fetch articles
 $stmt = $pdo->query("SELECT a.*, c.name as category_name FROM articles a LEFT JOIN categories c ON a.category_id = c.id ORDER BY publish_date DESC, id DESC");
 $articles = $stmt->fetchAll();
@@ -93,8 +134,8 @@ $categories = $stmt->fetchAll();
                     </span>
                 </td>
                 <td class="p-4 text-right space-x-2">
-                    <a href="#" class="text-[10px] uppercase tracking-widest text-navy hover:text-red font-bold">Edit</a>
-                    <a href="#" class="text-[10px] uppercase tracking-widest text-red hover:text-navy font-bold">Del</a>
+                    <a href="?action=edit&id=<?= $article['id'] ?>" class="text-[10px] uppercase tracking-widest text-navy hover:text-red font-bold">Edit</a>
+                    <!-- Del currently not wired robustly in this quick iteration, focused on Edit -->
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -107,65 +148,92 @@ $categories = $stmt->fetchAll();
     </table>
 </div>
 
-<?php elseif ($action === 'new'): ?>
+<?php elseif ($action === 'new' || $action === 'edit'): ?>
 
-<form method="POST" action="?action=new" enctype="multipart/form-data" class="bg-white p-8 border border-gray-300 shadow-sm max-w-4xl">
+<?php 
+// Prepare form variables
+$f_id = $edit_article['id'] ?? '';
+$f_title = $edit_article['title'] ?? '';
+$f_subtitle = $edit_article['subtitle'] ?? '';
+$f_category_id = $edit_article['category_id'] ?? '';
+$f_author_name = $edit_article['author_name'] ?? 'The Touch Editorial Board';
+$f_content = $edit_article['content'] ?? '';
+$f_is_featured = !empty($edit_article['is_featured']);
+$f_is_editor_pick = !empty($edit_article['is_editor_pick']);
+$f_status = $edit_article['status'] ?? 'draft';
+$f_image = $edit_article['image_path'] ?? '';
+?>
+
+<form method="POST" action="?action=<?= $action ?>" enctype="multipart/form-data" class="bg-white p-8 border border-gray-300 shadow-sm max-w-4xl">
+    <?php if ($action === 'edit'): ?>
+        <input type="hidden" name="id" value="<?= htmlspecialchars($f_id) ?>">
+        <div class="text-red font-bold text-[10px] uppercase tracking-widest mb-4">Editing Article ID <?= $f_id ?></div>
+    <?php endif; ?>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div class="col-span-1 md:col-span-2">
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Headline / Title *</label>
-            <input type="text" name="title" required class="w-full border-b border-gray-400 bg-transparent py-2 text-2xl font-serif focus:outline-none focus:border-navy transition-colors font-bold text-navy" placeholder="Enter article headline...">
+            <input type="text" name="title" required value="<?= htmlspecialchars($f_title) ?>" class="w-full border-b border-gray-400 bg-transparent py-2 text-2xl font-serif focus:outline-none focus:border-navy transition-colors font-bold text-navy" placeholder="Enter article headline...">
         </div>
         <div class="col-span-1 md:col-span-2">
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Subtitle / Summary Hook</label>
-            <input type="text" name="subtitle" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
+            <input type="text" name="subtitle" value="<?= htmlspecialchars($f_subtitle) ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
         </div>
         
         <div>
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Column / Category *</label>
             <select name="category_id" required class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
                 <?php foreach($categories as $cat): ?>
-                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                    <option value="<?= $cat['id'] ?>" <?= $f_category_id == $cat['id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <div>
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Author Name</label>
-            <input type="text" name="author_name" value="The Touch Editorial Board" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
+            <input type="text" name="author_name" value="<?= htmlspecialchars($f_author_name) ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
         </div>
     </div>
     
     <div class="mb-8">
         <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Article Body Content *</label>
-        <p class="text-[10px] text-navy/50 mb-2 font-medium uppercase tracking-widest">Supports basic HTML (e.g. &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;)</p>
-        <textarea name="content" rows="15" required class="w-full border border-gray-300 bg-transparent p-4 focus:outline-none focus:border-navy transition-colors font-medium text-navy resize-y"></textarea>
+        <p class="text-[10px] text-navy/50 mb-2 font-medium uppercase tracking-widest">Supports basic HTML (e.g. &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, line breaks)</p>
+        <textarea name="content" rows="15" required class="w-full border border-gray-300 bg-transparent p-4 focus:outline-none focus:border-navy transition-colors font-medium text-navy resize-y"><?= htmlspecialchars($f_content) ?></textarea>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 pb-8 border-b border-gray-200">
         <div>
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Featured Image (.jpg, .png)</label>
+            <?php if ($f_image): ?>
+                <div class="w-32 h-16 bg-light mb-2 overflow-hidden border border-gray-300">
+                    <img src="../<?= htmlspecialchars($f_image) ?>" class="w-full h-full object-cover">
+                </div>
+            <?php endif; ?>
             <input type="file" name="image" accept="image/*" class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-light file:text-navy hover:file:bg-navy hover:file:text-paper file:border file:border-gray-300 file:transition-colors bg-white border border-gray-300 p-2 cursor-pointer mt-2">
+            <?php if ($f_image): ?>
+                <span class="text-[10px] uppercase text-navy/50 tracking-widest">Leave empty to keep current image</span>
+            <?php endif; ?>
         </div>
         <div class="space-y-4 pt-4">
              <div class="flex items-center">
-                <input type="checkbox" id="is_featured" name="is_featured" value="1" class="w-4 h-4 text-navy bg-light border-gray-300 rounded focus:ring-navy focus:ring-2">
+                <input type="checkbox" id="is_featured" name="is_featured" value="1" <?= $f_is_featured ? 'checked' : '' ?> class="w-4 h-4 text-navy bg-light border-gray-300 rounded focus:ring-navy focus:ring-2">
                 <label for="is_featured" class="ml-2 text-xs font-bold uppercase tracking-widest text-navy">Featured Story (Top Stories area)</label>
             </div>
             <div class="flex items-center">
-                <input type="checkbox" id="is_editor_pick" name="is_editor_pick" value="1" class="w-4 h-4 text-navy bg-light border-gray-300 rounded focus:ring-navy focus:ring-2">
+                <input type="checkbox" id="is_editor_pick" name="is_editor_pick" value="1" <?= $f_is_editor_pick ? 'checked' : '' ?> class="w-4 h-4 text-navy bg-light border-gray-300 rounded focus:ring-navy focus:ring-2">
                 <label for="is_editor_pick" class="ml-2 text-xs font-bold uppercase tracking-widest text-navy">Editor's Pick</label>
             </div>
             <div class="flex items-center">
                 <label class="text-xs font-bold uppercase tracking-widest text-navy mr-4">Status:</label>
                 <select name="status" class="border border-gray-300 bg-transparent py-1 px-4 focus:outline-none focus:border-navy transition-colors font-medium text-sm text-navy">
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
+                    <option value="draft" <?= $f_status === 'draft' ? 'selected' : '' ?>>Draft</option>
+                    <option value="published" <?= $f_status === 'published' ? 'selected' : '' ?>>Published</option>
                 </select>
             </div>
         </div>
     </div>
 
     <button type="submit" class="bg-navy text-paper px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-red transition-colors shadow-none border border-navy">
-        Save & Publish Protocol
+        <?= $action === 'edit' ? 'Save Changes' : 'Save & Publish Protocol' ?>
     </button>
 </form>
 

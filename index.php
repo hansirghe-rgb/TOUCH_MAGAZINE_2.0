@@ -212,11 +212,6 @@ $homepage_categories = $stmt->fetchAll();
                     ?>
                         <div class="group hover-zoom <?= $i === 1 && count($top_stories) > 2 ? 'border-b border-gray-300 pb-8' : '' ?>">
                             <a href="article.php?id=<?= $sub_story['id'] ?>" class="block">
-                                <?php if ($i === 1): // Only first secondary story gets an image usually, based on original design layout ?>
-                                    <div class="w-full h-40 bg-paper border border-gray-300 mb-4 overflow-hidden">
-                                        <img src="<?= $sub_story['image_path'] ? htmlspecialchars($sub_story['image_path']) : 'images/travel.png' ?>" alt="Sub Story Image" class="w-full h-full object-cover p-1">
-                                    </div>
-                                <?php endif; ?>
                                 <span class="text-red font-bold text-[10px] uppercase tracking-widest block mb-2"><?= htmlspecialchars($sub_story['category_name']) ?></span>
                                 <h4 class="font-serif text-2xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2"><?= htmlspecialchars($sub_story['title']) ?></h4>
                                 <?php if ($i !== 1 && $sub_story['subtitle']): ?>
@@ -248,18 +243,34 @@ $homepage_categories = $stmt->fetchAll();
                     $col_images = ['images/politics.png', 'images/travel.png', 'images/culture.png', 'images/lifestyle.png', 'images/hero.png'];
                     foreach($homepage_categories as $index => $cat): 
                         $img = isset($col_images[$index]) ? $col_images[$index] : 'images/politics.png';
+                        
+                        // Fetch articles for this category
+                        $cat_stmt = $pdo->prepare("SELECT id, title FROM articles WHERE category_id = ? AND status = 'published' ORDER BY publish_date DESC, id DESC LIMIT 4");
+                        $cat_stmt->execute([$cat['id']]);
+                        $cat_articles = $cat_stmt->fetchAll();
                     ?>
-                    <a href="category.php?slug=<?= htmlspecialchars($cat['slug']) ?>" class="group block relative">
-                        <?php if ($index === 3): ?>
-                        <div class="absolute top-2 left-2 bg-gold text-paper text-[9px] uppercase font-bold px-2 py-1 z-10 shadow-sm tracking-widest">Monthly Special</div>
-                        <?php endif; ?>
-                        <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
-                            <img src="<?= $img ?>" alt="Column Image" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red"><?= htmlspecialchars($cat['name']) ?></h4>
-                    </a>
+                    <div class="relative group">
+                        <a href="category.php?slug=<?= htmlspecialchars($cat['slug']) ?>" class="block relative mb-4">
+                            <?php if ($index === 3): ?>
+                            <div class="absolute top-2 left-2 bg-gold text-paper text-[9px] uppercase font-bold px-2 py-1 z-10 shadow-sm tracking-widest">Monthly Special</div>
+                            <?php endif; ?>
+                            <div class="aspect-[4/3] w-full bg-light overflow-hidden border border-gray-300 shadow-sm">
+                                <img src="<?= $img ?>" alt="Column Image" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
+                            </div>
+                        </a>
+                        <a href="category.php?slug=<?= htmlspecialchars($cat['slug']) ?>" class="block">
+                            <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy hover:text-red transition-colors mb-3"><?= htmlspecialchars($cat['name']) ?></h4>
+                        </a>
+                        
+                        <ul class="border-t border-gray-300 pt-3 space-y-3">
+                            <?php foreach($cat_articles as $ca): ?>
+                            <li>
+                                <a href="article.php?id=<?= $ca['id'] ?>" class="text-[11px] font-bold font-serif leading-[1.3] text-navy/80 hover:text-red transition-colors block"><?= htmlspecialchars($ca['title']) ?></a>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
                     <?php endforeach; ?>
-                </div>
                 </div>
             </div>
         </section>
