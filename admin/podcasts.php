@@ -36,6 +36,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'new') {
     } else {
         $message = "Title is required.";
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'edit' && isset($_GET['id'])) {
+    $edit_id = (int)$_GET['id'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $video_url = $_POST['video_url']; 
+    $duration = $_POST['duration'];
+    $status = $_POST['status'];
+    
+    $stmt = $pdo->prepare("SELECT thumbnail_path, video_url FROM podcasts WHERE id = ?");
+    $stmt->execute([$edit_id]);
+    $existing = $stmt->fetch();
+    
+    $thumbnail_path = $existing['thumbnail_path'];
+    if (empty($video_url) && !isset($_FILES['video'])) {
+        $video_url = $existing['video_url'];
+    }
+
+    if (empty($_POST['video_url']) && isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
+        $upload = upload_secure_file($_FILES['video'], '../uploads/podcasts', ['video/mp4', 'video/webm']);
+        if ($upload['success']) $video_url = str_replace('../', '', $upload['path']);
+    }
+
+    if (isset($_FILES['thumb']) && $_FILES['thumb']['error'] === UPLOAD_ERR_OK) {
+        $upload = upload_secure_file($_FILES['thumb'], '../uploads/podcasts', ['image/jpeg', 'image/png']);
+        if ($upload['success']) $thumbnail_path = str_replace('../', '', $upload['path']);
+    }
+
+    if (!empty($title)) {
+        $stmt = $pdo->prepare("UPDATE podcasts SET title=?, description=?, thumbnail_path=?, video_url=?, duration=?, status=? WHERE id=?");
+        $stmt->execute([$title, $description, $thumbnail_path, $video_url, $duration, $status, $edit_id]);
+        $message = "Podcast broadcast updated securely.";
+        $action = 'list';
+    } else {
+        $message = "Title is required.";
+    }
 }
 
 // Fetch all podcasts
@@ -86,7 +121,7 @@ $podcasts = $stmt->fetchAll();
             <p class="text-[10px] font-bold uppercase tracking-widest text-navy/50 mb-4">Duration: <?= htmlspecialchars($podcast['duration'] ?: '--:--') ?></p>
             
             <div class="border-t border-gray-200 pt-3 text-[10px] font-bold uppercase tracking-widest text-right">
-                <a href="#" class="text-navy hover:text-red">Edit Broadcast</a>
+                <a href="?action=edit&id=<?= $podcast['id'] ?>" class="text-navy hover:text-red">Edit Broadcast</a>
             </div>
         </div>
     <?php endforeach; ?>
@@ -97,31 +132,38 @@ $podcasts = $stmt->fetchAll();
     <?php endif; ?>
 </div>
 
-<?php elseif ($action === 'new'): ?>
+<?php elseif ($action === 'new' || $action === 'edit'): 
+    $edit_data = ['title'=>'', 'description'=>'', 'video_url'=>'', 'duration'=>'', 'status'=>'draft'];
+    if ($action === 'edit' && isset($_GET['id'])) {
+        $stmt = $pdo->prepare("SELECT * FROM podcasts WHERE id = ?");
+        $stmt->execute([$_GET['id']]);
+        $edit_data = $stmt->fetch() ?: $edit_data;
+    }
+?>
 
-<form method="POST" action="?action=new" enctype="multipart/form-data" class="bg-white p-8 border border-gray-300 shadow-sm max-w-4xl">
+<form method="POST" action="?action=<?= $action ?><?= isset($_GET['id']) ? '&id='.(int)$_GET['id'] : '' ?>" enctype="multipart/form-data" class="bg-white p-8 border border-gray-300 shadow-sm max-w-4xl">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div class="col-span-1 md:col-span-2">
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Broadcast Title *</label>
-            <input type="text" name="title" required class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy text-xl font-serif">
+            <input type="text" name="title" value="<?= htmlspecialchars($edit_data['title']) ?>" required class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy text-xl font-serif">
         </div>
         
         <div>
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Duration (e.g. 45:00)</label>
-            <input type="text" name="duration" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
+            <input type="text" name="duration" value="<?= htmlspecialchars($edit_data['duration']) ?>" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
         </div>
         <div>
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Status</label>
             <select name="status" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy">
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
+                <option value="draft" <?= $edit_data['status'] === 'draft' ? 'selected' : '' ?>>Draft</option>
+                <option value="published" <?= $edit_data['status'] === 'published' ? 'selected' : '' ?>>Published</option>
             </select>
         </div>
     </div>
     
     <div class="mb-8">
         <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Contextual Description</label>
-        <textarea name="description" rows="3" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy resize-none"></textarea>
+        <textarea name="description" rows="3" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy resize-none"><?= htmlspecialchars($edit_data['description']) ?></textarea>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 pb-8 border-b border-gray-200">
@@ -131,7 +173,7 @@ $podcasts = $stmt->fetchAll();
         </div>
         <div>
             <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">Video Source</label>
-            <input type="text" name="video_url" placeholder="Alternatively, paste YouTube/Vimeo Embed URL here" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy text-xs mb-4">
+            <input type="text" name="video_url" value="<?= htmlspecialchars($edit_data['video_url']) ?>" placeholder="Alternatively, paste YouTube/Vimeo Embed URL here" class="w-full border-b border-gray-400 bg-transparent py-2 focus:outline-none focus:border-navy transition-colors font-medium text-navy text-xs mb-4">
             
             <p class="text-[10px] text-navy/50 font-bold uppercase tracking-widest mb-1">OR UPLOAD RAW FILE (.mp4)</p>
             <input type="file" name="video" accept="video/mp4,video/webm" class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-light file:text-navy hover:file:bg-navy hover:file:text-paper file:border file:border-gray-300 file:transition-colors bg-white border border-gray-300 p-1 cursor-pointer">

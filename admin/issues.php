@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'new') {
     }
     
     if (isset($_FILES['pdf']) && $_FILES['pdf']['error'] === UPLOAD_ERR_OK) {
-        $upload = upload_secure_file($_FILES['pdf'], '../uploads/issues', ['application/pdf']);
+        $upload = upload_secure_file($_FILES['pdf'], '../uploads/issues', ['application/pdf', 'text/html', 'text/htm', 'application/zip', 'application/x-zip-compressed']);
         if ($upload['success']) $pdf_path = str_replace('../', '', $upload['path']);
     }
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'new') {
         $message = "Issue uploaded securely.";
         $action = 'list'; // return to list view
     } else {
-        $message = "Please fill all required fields and upload both valid cover image and PDF document.";
+        $message = "Please fill all required fields and upload both valid cover image and Digital File (.html/.pdf).";
     }
 }
 
@@ -85,7 +85,7 @@ $issues = $stmt->fetchAll();
             <p class="text-[10px] font-bold uppercase tracking-widest text-navy/50 mb-4"><?= htmlspecialchars($issue['issue_month']) ?> <?= htmlspecialchars($issue['issue_year']) ?></p>
             
             <div class="border-t border-gray-200 pt-3 text-[10px] font-bold uppercase tracking-widest flex justify-between">
-                <a href="../<?= htmlspecialchars($issue['pdf_file']) ?>" target="_blank" class="text-navy hover:text-red">View PDF</a>
+                <a href="../<?= htmlspecialchars($issue['pdf_file']) ?>" target="_blank" class="text-navy hover:text-red">View Digital File</a>
                 <span class="text-navy/30">ID: <?= $issue['id'] ?></span>
             </div>
         </div>
@@ -133,8 +133,8 @@ $issues = $stmt->fetchAll();
             <input type="file" name="cover" accept="image/*" required class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-light file:text-navy hover:file:bg-navy hover:file:text-paper file:border file:border-gray-300 file:transition-colors bg-white border border-gray-300 p-2 cursor-pointer mt-2">
         </div>
         <div>
-            <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">2. Magazine Digital File (.pdf)</label>
-            <input type="file" name="pdf" accept="application/pdf" required class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-light file:text-navy hover:file:bg-navy hover:file:text-paper file:border file:border-gray-300 file:transition-colors bg-white border border-gray-300 p-2 cursor-pointer mt-2">
+            <label class="block text-xs font-bold tracking-widest uppercase text-navy/70 mb-2">2. Magazine Digital File (.html, .pdf, .zip)</label>
+            <input type="file" name="pdf" accept=".html,.htm,.pdf,.zip" required class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-light file:text-navy hover:file:bg-navy hover:file:text-paper file:border file:border-gray-300 file:transition-colors bg-white border border-gray-300 p-2 cursor-pointer mt-2">
         </div>
     </div>
     

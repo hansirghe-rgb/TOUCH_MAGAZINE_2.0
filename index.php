@@ -290,14 +290,29 @@ $latest_podcast = $stmt->fetch();
                 </div>
                 
                 <!-- Video Mini Player -->
-                <div class="w-full aspect-video bg-navy relative border border-gray-300 group shadow-sm">
-                    <img src="<?= $latest_podcast && $latest_podcast['thumbnail_path'] ? htmlspecialchars($latest_podcast['thumbnail_path']) : 'images/politics.png' ?>" alt="Podcast Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
-                    <!-- Play icon -->
-                    <a href="podcasts.php" class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-16 h-16 bg-paper text-navy flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
-                        </div>
-                    </a>
+                <div class="w-full aspect-video bg-navy relative border border-gray-300 group shadow-sm z-10">
+                    <?php if ($latest_podcast && $latest_podcast['video_url']): ?>
+                        <?php
+                            $vid_url = $latest_podcast['video_url'];
+                            // Simple embed detection logic
+                            if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
+                                // Assume they pasted an embeddable URL or frame it (production code might parse out video IDs)
+                        ?>
+                            <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <?php else: ?>
+                            <video controls class="w-full h-full pointer-events-auto object-cover" poster="<?= htmlspecialchars($latest_podcast['thumbnail_path'] ?: 'images/politics.png') ?>">
+                                <source src="<?= htmlspecialchars($vid_url) ?>" type="video/mp4">
+                            </video>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <img src="<?= $latest_podcast && $latest_podcast['thumbnail_path'] ? htmlspecialchars($latest_podcast['thumbnail_path']) : 'images/politics.png' ?>" alt="Podcast Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
+                        <!-- Play icon -->
+                        <a href="podcasts.php" class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-paper text-navy flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+                            </div>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>
