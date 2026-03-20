@@ -23,31 +23,31 @@ $messages_count = $stmt->fetch()['total'];
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
     <!-- Stat Cards -->
     <div class="bg-white p-6 border border-gray-300 shadow-sm relative group overflow-hidden">
-        <div class="absolute w-1 h-full bg-navy left-0 top-0 group-hover:w-full group-hover:opacity-5 transition-all duration-500"></div>
-        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2">Total Articles</h3>
-        <p class="text-4xl font-serif font-black text-navy"><?= $articles_count ?></p>
-        <a href="articles.php" class="text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Manage Desk &rarr;</a>
+        <div class="absolute w-1 h-full bg-navy left-0 top-0 group-hover:w-full group-hover:opacity-5 transition-all duration-500 pointer-events-none"></div>
+        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2 relative z-10">Total Articles</h3>
+        <p class="text-4xl font-serif font-black text-navy relative z-10"><?= $articles_count ?></p>
+        <a href="articles.php" class="relative z-10 text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Manage Desk &rarr;</a>
     </div>
 
     <div class="bg-white p-6 border border-gray-300 shadow-sm relative group overflow-hidden">
-        <div class="absolute w-1 h-full bg-navy left-0 top-0 group-hover:w-full group-hover:opacity-5 transition-all duration-500"></div>
-        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2">Digital Issues</h3>
-        <p class="text-4xl font-serif font-black text-navy"><?= $issues_count ?></p>
-        <a href="issues.php" class="text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Manage Archives &rarr;</a>
+        <div class="absolute w-1 h-full bg-navy left-0 top-0 group-hover:w-full group-hover:opacity-5 transition-all duration-500 pointer-events-none"></div>
+        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2 relative z-10">Digital Issues</h3>
+        <p class="text-4xl font-serif font-black text-navy relative z-10"><?= $issues_count ?></p>
+        <a href="issues.php" class="relative z-10 text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Manage Archives &rarr;</a>
     </div>
 
     <div class="bg-white p-6 border border-gray-300 shadow-sm relative group overflow-hidden">
-        <div class="absolute w-1 h-full bg-navy left-0 top-0 group-hover:w-full group-hover:opacity-5 transition-all duration-500"></div>
-        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2">Studio Podcasts</h3>
-        <p class="text-4xl font-serif font-black text-navy"><?= $podcasts_count ?></p>
-        <a href="podcasts.php" class="text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Manage Studios &rarr;</a>
+        <div class="absolute w-1 h-full bg-navy left-0 top-0 group-hover:w-full group-hover:opacity-5 transition-all duration-500 pointer-events-none"></div>
+        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2 relative z-10">Studio Podcasts</h3>
+        <p class="text-4xl font-serif font-black text-navy relative z-10"><?= $podcasts_count ?></p>
+        <a href="podcasts.php" class="relative z-10 text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Manage Studios &rarr;</a>
     </div>
 
     <div class="bg-white p-6 border border-gray-300 shadow-sm relative group overflow-hidden">
-        <div class="absolute w-1 h-full bg-red left-0 top-0"></div>
-        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2">Secure Submissions (Unread)</h3>
-        <p class="text-4xl font-serif font-black text-red"><?= $messages_count ?></p>
-        <a href="messages.php" class="text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Read Mail &rarr;</a>
+        <div class="absolute w-1 h-full bg-red left-0 top-0 pointer-events-none"></div>
+        <h3 class="text-xs font-bold tracking-widest uppercase text-navy/60 mb-2 relative z-10">Secure Submissions (Unread)</h3>
+        <p class="text-4xl font-serif font-black text-red relative z-10"><?= $messages_count ?></p>
+        <a href="messages.php" class="relative z-10 text-[10px] font-bold uppercase tracking-widest text-red hover:text-navy mt-4 inline-block">Read Mail &rarr;</a>
     </div>
 </div>
 
