@@ -76,7 +76,7 @@ $latest_podcast = $stmt->fetch();
         <div class="max-w-7xl mx-auto px-4 sm:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <a href="index.html" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
+                <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
                     The Touch <span class="text-red ml-2 relative -top-2 text-4xl leading-none">.</span>
                 </a>
                 
@@ -161,7 +161,7 @@ $latest_podcast = $stmt->fetch();
                     </div>
                     
                     <div class="mt-4 pt-4 border-t border-gray-300 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
-                        <a href="latest-issue.html" class="text-navy hover:text-red flex items-center">
+                        <a href="latest-issue.php" class="text-navy hover:text-red flex items-center">
                             Open Flipbook Edition
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </a>
@@ -181,7 +181,7 @@ $latest_podcast = $stmt->fetch();
             <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
                 <!-- Lead Story -->
                 <div class="md:col-span-7 lg:col-span-8 group hover-zoom">
-                    <a href="politics.html" class="block">
+                    <a href="politics.php" class="block">
                         <div class="w-full aspect-video bg-paper border border-gray-300 mb-6 overflow-hidden">
                             <img src="images/politics.png" alt="Economic Reforms" class="w-full h-full object-cover p-1">
                         </div>
@@ -197,7 +197,7 @@ $latest_podcast = $stmt->fetch();
                     
                     <!-- Sub Article 1 -->
                     <div class="group hover-zoom border-b border-gray-300 pb-8">
-                        <a href="travel.html" class="block">
+                        <a href="travel.php" class="block">
                             <div class="w-full h-40 bg-paper border border-gray-300 mb-4 overflow-hidden">
                                 <img src="images/travel.png" alt="Travel Guide" class="w-full h-full object-cover p-1">
                             </div>
@@ -209,7 +209,7 @@ $latest_podcast = $stmt->fetch();
 
                     <!-- Sub Article 2 -->
                     <div class="group hover-zoom">
-                        <a href="culture.html" class="block">
+                        <a href="culture.php" class="block">
                             <span class="text-red font-bold text-[10px] uppercase tracking-widest block mb-2">Heritage</span>
                             <h4 class="font-serif text-2xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2">Monuments of Antiquity: Restoration at Anuradhapura</h4>
                             <p class="text-navy/80 text-sm mb-2 font-medium">Architectural efforts unearthing centuries-old marvels.</p>
@@ -226,13 +226,13 @@ $latest_podcast = $stmt->fetch();
             <div class="max-w-7xl mx-auto px-4 sm:px-8">
                 <div class="flex justify-between items-end mb-10 news-line pt-4 border-gray-300">
                     <h2 class="font-serif text-4xl font-black text-navy">The Columns</h2>
-                    <a href="columns.html" class="hidden sm:inline-block text-xs font-bold uppercase tracking-widest text-navy hover:text-red">View All &rarr;</a>
+                    <a href="columns.php" class="hidden sm:inline-block text-xs font-bold uppercase tracking-widest text-navy hover:text-red">View All &rarr;</a>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                     
                     <!-- Col 1 -->
-                    <a href="politics.html" class="group block">
+                    <a href="politics.php" class="group block">
                         <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
                             <img src="images/politics.png" alt="Politics" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
                         </div>
@@ -240,7 +240,7 @@ $latest_podcast = $stmt->fetch();
                     </a>
 
                     <!-- Col 2 -->
-                    <a href="travel.html" class="group block">
+                    <a href="travel.php" class="group block">
                         <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
                             <img src="images/travel.png" alt="Travel" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
                         </div>
@@ -248,7 +248,7 @@ $latest_podcast = $stmt->fetch();
                     </a>
 
                     <!-- Col 3 -->
-                    <a href="culture.html" class="group block">
+                    <a href="culture.php" class="group block">
                         <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
                             <img src="images/culture.png" alt="Heritage" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
                         </div>
@@ -256,7 +256,7 @@ $latest_podcast = $stmt->fetch();
                     </a>
 
                     <!-- Col 4 -->
-                    <a href="food.html" class="group block relative">
+                    <a href="food.php" class="group block relative">
                         <div class="absolute top-2 left-2 bg-gold text-paper text-[9px] uppercase font-bold px-2 py-1 z-10 shadow-sm tracking-widest">Monthly Special</div>
                         <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
                             <img src="images/lifestyle.png" alt="Food Recipes" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
@@ -265,7 +265,7 @@ $latest_podcast = $stmt->fetch();
                     </a>
 
                     <!-- Col 5 -->
-                    <a href="sports.html" class="group block">
+                    <a href="sports.php" class="group block">
                         <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
                             <img src="images/hero.png" alt="Sports" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
                         </div>
@@ -310,22 +310,22 @@ $latest_podcast = $stmt->fetch();
             
             <!-- Brand -->
             <div class="col-span-1 lg:col-span-1">
-                <a href="index.html" class="font-serif text-3xl font-black tracking-tighter text-paper uppercase flex items-center mb-6">
+                <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-paper uppercase flex items-center mb-6">
                     The Touch <span class="text-red ml-1 relative -top-1 text-3xl leading-none">.</span>
                 </a>
                 <p class="text-paper/70 text-sm leading-relaxed mb-6 font-medium">A modern news magazine delivering premium journalism, launched out of Colombo, Sri Lanka.</p>
-                <a href="contact.html" class="text-[10px] font-bold uppercase tracking-widest hover:text-red transition-colors flex items-center">Contact Editorial <span class="ml-1">&rarr;</span></a>
+                <a href="contact.php" class="text-[10px] font-bold uppercase tracking-widest hover:text-red transition-colors flex items-center">Contact Editorial <span class="ml-1">&rarr;</span></a>
             </div>
 
             <!-- Links -->
             <div class="col-span-1">
                 <h4 class="text-[10px] font-bold uppercase tracking-widest text-paper/40 mb-6 font-sans">Sections</h4>
                 <ul class="space-y-3 text-sm font-medium">
-                    <li><a href="politics.html" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Politics & Current Issues</a></li>
-                    <li><a href="travel.html" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Travel & Photography</a></li>
-                    <li><a href="culture.html" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Heritage & Environment</a></li>
-                    <li><a href="food.html" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Food Recipes</a></li>
-                    <li><a href="sports.html" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Sports & Entertainment</a></li>
+                    <li><a href="politics.php" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Politics & Current Issues</a></li>
+                    <li><a href="travel.php" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Travel & Photography</a></li>
+                    <li><a href="culture.php" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Heritage & Environment</a></li>
+                    <li><a href="food.php" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Food Recipes</a></li>
+                    <li><a href="sports.php" class="hover:text-red transition-colors text-paper/80 hover:text-paper">Sports & Entertainment</a></li>
                 </ul>
             </div>
 

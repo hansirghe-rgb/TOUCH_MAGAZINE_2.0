@@ -18,16 +18,16 @@
     
     <nav class="bg-paper border-b border-gray-300 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center h-20">
-            <a href="index.html" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
+            <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
                 The Touch <span class="text-red ml-2 relative -top-2 text-4xl leading-none">.</span>
             </a>
             <div class="hidden lg:flex space-x-8 items-center text-xs font-bold uppercase tracking-widest text-navy">
-                <a href="index.html" class="hover:text-red transition-colors py-1">Home</a>
-                <a href="latest-issue.html" class="hover:text-red transition-colors py-1">Latest Issue</a>
-                <a href="columns.html" class="hover:text-red transition-colors py-1">Columns</a>
-                <a href="podcasts.html" class="text-red border-b-2 border-red transition-colors py-1">Podcasts</a>
-                <a href="about.html" class="hover:text-red transition-colors py-1">About Us</a>
-                <a href="contact.html" class="bg-navy text-paper px-4 py-2 hover:bg-red transition-colors">Contact</a>
+                <a href="index.php" class="hover:text-red transition-colors py-1">Home</a>
+                <a href="latest-issue.php" class="hover:text-red transition-colors py-1">Latest Issue</a>
+                <a href="columns.php" class="hover:text-red transition-colors py-1">Columns</a>
+                <a href="podcasts.php" class="text-red border-b-2 border-red transition-colors py-1">Podcasts</a>
+                <a href="about.php" class="hover:text-red transition-colors py-1">About Us</a>
+                <a href="contact.php" class="bg-navy text-paper px-4 py-2 hover:bg-red transition-colors">Contact</a>
             </div>
             <button id="mobile-menu-btn" class="lg:hidden text-navy focus:outline-none">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -37,7 +37,7 @@
     <div id="mobile-menu" class="fixed inset-0 z-[100] bg-paper transform translate-x-full transition-transform duration-500 flex flex-col items-center justify-center border-l border-gray-300">
         <button id="close-menu-btn" class="absolute top-8 right-8 text-navy hover:text-red"><svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         <div class="flex flex-col space-y-6 text-center font-serif text-2xl font-bold uppercase tracking-widest">
-            <a href="index.html" class="hover:text-red">Home</a><a href="latest-issue.html" class="hover:text-red">Latest Issue</a><a href="columns.html" class="hover:text-red">Columns</a><a href="podcasts.html" class="text-red">Podcasts</a><a href="about.html" class="hover:text-red">About Us</a><a href="contact.html" class="hover:text-red">Contact</a>
+            <a href="index.php" class="hover:text-red">Home</a><a href="latest-issue.php" class="hover:text-red">Latest Issue</a><a href="columns.php" class="hover:text-red">Columns</a><a href="podcasts.php" class="text-red">Podcasts</a><a href="about.php" class="hover:text-red">About Us</a><a href="contact.php" class="hover:text-red">Contact</a>
         </div>
     </div>
 

@@ -18,16 +18,16 @@
     
     <nav class="bg-paper border-b border-gray-300 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center h-20">
-            <a href="index.html" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
+            <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
                 The Touch <span class="text-red ml-2 relative -top-2 text-4xl leading-none">.</span>
             </a>
             <div class="hidden lg:flex space-x-8 items-center text-xs font-bold uppercase tracking-widest text-navy">
-                <a href="index.html" class="hover:text-red transition-colors py-1">Home</a>
-                <a href="latest-issue.html" class="hover:text-red transition-colors py-1">Latest Issue</a>
-                <a href="columns.html" class="text-red border-b-2 border-red transition-colors py-1">Columns</a>
-                <a href="podcasts.html" class="hover:text-red transition-colors py-1">Podcasts</a>
-                <a href="about.html" class="hover:text-red transition-colors py-1">About Us</a>
-                <a href="contact.html" class="bg-navy text-paper px-4 py-2 hover:bg-red transition-colors">Contact</a>
+                <a href="index.php" class="hover:text-red transition-colors py-1">Home</a>
+                <a href="latest-issue.php" class="hover:text-red transition-colors py-1">Latest Issue</a>
+                <a href="columns.php" class="text-red border-b-2 border-red transition-colors py-1">Columns</a>
+                <a href="podcasts.php" class="hover:text-red transition-colors py-1">Podcasts</a>
+                <a href="about.php" class="hover:text-red transition-colors py-1">About Us</a>
+                <a href="contact.php" class="bg-navy text-paper px-4 py-2 hover:bg-red transition-colors">Contact</a>
             </div>
             <button id="mobile-menu-btn" class="lg:hidden text-navy focus:outline-none">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -45,7 +45,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                 
-                <a href="politics.html" class="group fade-up">
+                <a href="politics.php" class="group fade-up">
                     <div class="aspect-video w-full bg-light mb-6 overflow-hidden border border-gray-300 shadow-sm p-1">
                         <img src="images/politics.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
@@ -53,7 +53,7 @@
                     <p class="text-navy/70 font-medium">Decoding regional instability and fiscal strategies.</p>
                 </a>
 
-                <a href="travel.html" class="group fade-up" style="transition-delay: 100ms">
+                <a href="travel.php" class="group fade-up" style="transition-delay: 100ms">
                     <div class="aspect-video w-full bg-light mb-6 overflow-hidden border border-gray-300 shadow-sm p-1">
                         <img src="images/travel.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
@@ -61,7 +61,7 @@
                     <p class="text-navy/70 font-medium">Unseen local destinations and vivid photo essays.</p>
                 </a>
 
-                <a href="culture.html" class="group fade-up" style="transition-delay: 200ms">
+                <a href="culture.php" class="group fade-up" style="transition-delay: 200ms">
                     <div class="aspect-video w-full bg-light mb-6 overflow-hidden border border-gray-300 shadow-sm p-1">
                         <img src="images/culture.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
@@ -69,7 +69,7 @@
                     <p class="text-navy/70 font-medium">Preserving antiquity and analyzing ecological shifts.</p>
                 </a>
 
-                <a href="food.html" class="group fade-up">
+                <a href="food.php" class="group fade-up">
                     <div class="aspect-video w-full bg-light mb-6 overflow-hidden border border-gray-300 shadow-sm relative p-1">
                         <div class="absolute top-2 left-2 bg-gold text-paper text-[9px] uppercase font-bold px-2 py-1 z-10 shadow-sm tracking-widest">Special Function</div>
                         <img src="images/lifestyle.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -78,7 +78,7 @@
                     <p class="text-navy/70 font-medium">Culinary excellence delivered from top island kitchens.</p>
                 </a>
 
-                <a href="sports.html" class="group fade-up" style="transition-delay: 100ms">
+                <a href="sports.php" class="group fade-up" style="transition-delay: 100ms">
                     <div class="aspect-video w-full bg-light mb-6 overflow-hidden border border-gray-300 shadow-sm p-1">
                         <img src="images/hero.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
