@@ -1,3 +1,19 @@
+<?php
+require_once 'config/database.php';
+
+$stmt = $pdo->query("SELECT * FROM podcasts WHERE status = 'published' ORDER BY id DESC");
+$podcasts = $stmt->fetchAll();
+
+$current_podcast = count($podcasts) > 0 ? $podcasts[0] : null;
+if (isset($_GET['id'])) {
+    foreach($podcasts as $p) {
+        if ($p['id'] == $_GET['id']) {
+            $current_podcast = $p;
+            break;
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -56,30 +72,28 @@
                 <div class="lg:col-span-8 fade-up">
                     <div class="flex justify-between items-end mb-6">
                         <h2 class="font-serif text-3xl font-black text-navy border-b-[3px] border-navy pb-2">Featured Broadcast</h2>
-                        <label for="podcast-upload" class="cursor-pointer border border-navy text-navy px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-navy hover:text-paper transition-colors">
-                            Upload Video File
-                        </label>
-                        <input type="file" id="podcast-upload" accept="video/*,image/*" class="hidden">
                     </div>
 
                     <div class="w-full aspect-video bg-light relative border border-gray-300 overflow-hidden shadow-lg flex items-center justify-center p-1">
-                        <!-- Actual Video Player hidden by default until upload -->
-                        <video id="main-podcast-video" class="w-full h-full object-cover hidden" controls></video>
-                        
-                        <!-- Thumbnail state -->
-                        <img id="main-podcast-thumb" src="images/politics.png" alt="Broadcast Thumbnail" class="w-full h-full object-cover opacity-90 transition-opacity">
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent pointer-events-none"></div>
-
-                        <!-- Play Overlay Icon -->
-                        <div id="podcast-play-btn" class="absolute z-20 w-16 h-16 bg-paper shadow-xl flex items-center justify-center cursor-pointer hover:scale-110 transition-transform text-navy">
-                            <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
-                        </div>
-
-                        <!-- Info tag -->
-                        <div class="absolute bottom-6 left-6 z-10 pointer-events-none text-paper">
-                            <h3 class="font-serif text-2xl font-bold mb-1">Live: The Economic Restructuring</h3>
-                            <p class="text-[10px] font-bold tracking-widest uppercase opacity-80">Ep 01 &bull; 45 Mins</p>
-                        </div>
+                        <?php if ($current_podcast): ?>
+                            <?php
+                                $vid_url = $current_podcast['video_url'];
+                                if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
+                            ?>
+                                <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto z-10 relative" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <?php else: ?>
+                                <video controls class="w-full h-full pointer-events-auto object-cover z-10 relative" poster="<?= htmlspecialchars($current_podcast['thumbnail_path'] ?: 'images/politics.png') ?>">
+                                    <source src="<?= htmlspecialchars($vid_url) ?>" type="video/mp4">
+                                </video>
+                            <?php endif; ?>
+                            
+                            <div class="absolute bottom-6 left-6 z-20 pointer-events-none text-paper drop-shadow-lg p-2 bg-navy/50 backdrop-blur-sm">
+                                <h3 class="font-serif text-2xl font-bold mb-1"><?= htmlspecialchars($current_podcast['title']) ?></h3>
+                                <p class="text-[10px] font-bold tracking-widest uppercase opacity-80"><?= htmlspecialchars($current_podcast['duration'] ?: '00:00') ?></p>
+                            </div>
+                        <?php else: ?>
+                            <div class="w-full h-full bg-navy flex items-center justify-center text-paper font-bold uppercase tracking-widest text-xs z-10 relative">No podcasts available.</div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -87,35 +101,24 @@
                 <div class="lg:col-span-4 fade-up">
                     <h2 class="font-serif text-3xl font-black text-navy mb-6 border-b-[3px] border-navy pb-2">Recent Episodes</h2>
                     <div class="flex flex-col gap-6">
-                        
-                        <!-- Card 1 -->
-                        <div class="flex gap-4 border border-gray-300 bg-light p-3 hover:shadow-md transition-shadow group cursor-pointer">
-                            <div class="w-32 h-24 flex-shrink-0 bg-gray-200 relative border border-gray-300 p-1">
-                                <img src="images/travel.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
+                        <?php foreach($podcasts as $p): if($current_podcast && $p['id'] == $current_podcast['id']) continue; ?>
+                        <!-- Card -->
+                        <div class="flex gap-4 border border-gray-300 bg-light p-3 hover:shadow-md transition-shadow group cursor-pointer" onclick="window.location.href='podcasts.php?id=<?= $p['id'] ?>'">
+                            <div class="w-32 h-24 flex-shrink-0 bg-navy relative border border-gray-300 p-1">
+                                <img src="<?= htmlspecialchars($p['thumbnail_path'] ?: 'images/politics.png') ?>" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
                                 <div class="absolute inset-0 flex items-center justify-center">
                                     <div class="bg-paper p-2 text-navy opacity-80 group-hover:opacity-100 transition-opacity"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg></div>
                                 </div>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <h4 class="font-bold text-sm text-navy mb-1 leading-tight group-hover:text-red transition-colors">Tourism Sector Recovery Tactics</h4>
-                                <p class="text-[10px] font-bold text-navy/50 uppercase tracking-widest">Ep 23 &bull; 32 Mins</p>
+                                <h4 class="font-bold text-sm text-navy mb-1 leading-tight group-hover:text-red transition-colors"><?= htmlspecialchars($p['title']) ?></h4>
+                                <p class="text-[10px] font-bold text-navy/50 uppercase tracking-widest"><?= htmlspecialchars($p['duration'] ?: '00:00') ?></p>
                             </div>
                         </div>
-
-                        <!-- Card 2 -->
-                        <div class="flex gap-4 border border-gray-300 bg-light p-3 hover:shadow-md transition-shadow group cursor-pointer">
-                            <div class="w-32 h-24 flex-shrink-0 bg-gray-200 relative border border-gray-300 p-1">
-                                <img src="images/culture.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="bg-paper p-2 text-navy opacity-80 group-hover:opacity-100 transition-opacity"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg></div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <h4 class="font-bold text-sm text-navy mb-1 leading-tight group-hover:text-red transition-colors">Preserving Ancient Sites</h4>
-                                <p class="text-[10px] font-bold text-navy/50 uppercase tracking-widest">Ep 22 &bull; 50 Mins</p>
-                            </div>
-                        </div>
-
+                        <?php endforeach; ?>
+                        <?php if (count($podcasts) <= 1): ?>
+                            <div class="text-xs font-bold uppercase tracking-widest text-navy/50 p-4 text-center border border-gray-300 bg-light">No other recent episodes available.</div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

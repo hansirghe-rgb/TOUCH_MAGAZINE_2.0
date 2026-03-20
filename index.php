@@ -25,6 +25,14 @@ if(!$latest_issue) {
 // Fetch Latest Video Podcast
 $stmt = $pdo->query("SELECT * FROM podcasts WHERE status = 'published' ORDER BY id DESC LIMIT 1");
 $latest_podcast = $stmt->fetch();
+
+// Fetch Top Stories from Articles
+$stmt = $pdo->query("SELECT a.*, c.name as category_name, c.slug as category_slug FROM articles a LEFT JOIN categories c ON a.category_id = c.id WHERE a.status = 'published' AND a.is_featured = 1 ORDER BY a.publish_date DESC, a.id DESC LIMIT 3");
+$top_stories = $stmt->fetchAll();
+
+// Fetch Columns (Categories) for Showcase
+$stmt = $pdo->query("SELECT * FROM categories ORDER BY name ASC LIMIT 5");
+$homepage_categories = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -179,45 +187,51 @@ $latest_podcast = $stmt->fetch();
             <h2 class="font-serif text-4xl font-black text-navy mb-8 news-line-thick pt-4">Top Stories</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <?php if (!empty($top_stories)): 
+                    $lead_story = $top_stories[0];
+                ?>
                 <!-- Lead Story -->
                 <div class="md:col-span-7 lg:col-span-8 group hover-zoom">
-                    <a href="politics.php" class="block">
+                    <a href="article.php?id=<?= $lead_story['id'] ?>" class="block">
                         <div class="w-full aspect-video bg-paper border border-gray-300 mb-6 overflow-hidden">
-                            <img src="images/politics.png" alt="Economic Reforms" class="w-full h-full object-cover p-1">
+                            <img src="<?= $lead_story['image_path'] ? htmlspecialchars($lead_story['image_path']) : 'images/politics.png' ?>" alt="Lead Story" class="w-full h-full object-cover p-1">
                         </div>
-                        <span class="text-red font-bold text-[10px] uppercase tracking-widest">Politics & Economy</span>
-                        <h3 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-navy mt-2 mb-4 group-hover:text-red transition-colors leading-tight">Decoding the National Economic Policy Restructuring</h3>
-                        <p class="text-navy/80 mb-4 font-medium leading-relaxed">As Colombo gears up for unprecedented fiscal policies, an exclusive deep-dive into the strategies aimed at stabilization and long-term exponential growth.</p>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By The Touch Editorial Board &bull; 6 Min Read</span>
+                        <span class="text-red font-bold text-[10px] uppercase tracking-widest"><?= htmlspecialchars($lead_story['category_name']) ?></span>
+                        <h3 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-navy mt-2 mb-4 group-hover:text-red transition-colors leading-tight"><?= htmlspecialchars($lead_story['title']) ?></h3>
+                        <?php if ($lead_story['subtitle']): ?>
+                            <p class="text-navy/80 mb-4 font-medium leading-relaxed"><?= htmlspecialchars($lead_story['subtitle']) ?></p>
+                        <?php endif; ?>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By <?= htmlspecialchars($lead_story['author_name']) ?> &bull; <?= date('M d, Y', strtotime($lead_story['publish_date'])) ?></span>
                     </a>
                 </div>
 
                 <!-- Secondary Stories Area -->
                 <div class="md:col-span-5 lg:col-span-4 flex flex-col gap-8 md:pl-8 md:border-l border-gray-300">
-                    
-                    <!-- Sub Article 1 -->
-                    <div class="group hover-zoom border-b border-gray-300 pb-8">
-                        <a href="travel.php" class="block">
-                            <div class="w-full h-40 bg-paper border border-gray-300 mb-4 overflow-hidden">
-                                <img src="images/travel.png" alt="Travel Guide" class="w-full h-full object-cover p-1">
-                            </div>
-                            <span class="text-red font-bold text-[10px] uppercase tracking-widest block mb-2">Travel</span>
-                            <h4 class="font-serif text-2xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2">The Hidden Valleys: Rediscovering the Central Highlands</h4>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By Anya Fernando</span>
-                        </a>
-                    </div>
-
-                    <!-- Sub Article 2 -->
-                    <div class="group hover-zoom">
-                        <a href="culture.php" class="block">
-                            <span class="text-red font-bold text-[10px] uppercase tracking-widest block mb-2">Heritage</span>
-                            <h4 class="font-serif text-2xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2">Monuments of Antiquity: Restoration at Anuradhapura</h4>
-                            <p class="text-navy/80 text-sm mb-2 font-medium">Architectural efforts unearthing centuries-old marvels.</p>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By Tariq Silva</span>
-                        </a>
-                    </div>
-
+                    <?php for($i = 1; $i < count($top_stories); $i++): 
+                        $sub_story = $top_stories[$i];
+                    ?>
+                        <div class="group hover-zoom <?= $i === 1 && count($top_stories) > 2 ? 'border-b border-gray-300 pb-8' : '' ?>">
+                            <a href="article.php?id=<?= $sub_story['id'] ?>" class="block">
+                                <?php if ($i === 1): // Only first secondary story gets an image usually, based on original design layout ?>
+                                    <div class="w-full h-40 bg-paper border border-gray-300 mb-4 overflow-hidden">
+                                        <img src="<?= $sub_story['image_path'] ? htmlspecialchars($sub_story['image_path']) : 'images/travel.png' ?>" alt="Sub Story Image" class="w-full h-full object-cover p-1">
+                                    </div>
+                                <?php endif; ?>
+                                <span class="text-red font-bold text-[10px] uppercase tracking-widest block mb-2"><?= htmlspecialchars($sub_story['category_name']) ?></span>
+                                <h4 class="font-serif text-2xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2"><?= htmlspecialchars($sub_story['title']) ?></h4>
+                                <?php if ($i !== 1 && $sub_story['subtitle']): ?>
+                                    <p class="text-navy/80 text-sm mb-2 font-medium"><?= htmlspecialchars($sub_story['subtitle']) ?></p>
+                                <?php endif; ?>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By <?= htmlspecialchars($sub_story['author_name']) ?></span>
+                            </a>
+                        </div>
+                    <?php endfor; ?>
                 </div>
+                <?php else: ?>
+                    <div class="col-span-full text-center py-10 text-navy/50 font-bold uppercase tracking-widest text-sm border border-gray-300 bg-paper">
+                        No top stories currently featured. Note: New articles must be marked as "Featured" via the portal.
+                    </div>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -229,49 +243,21 @@ $latest_podcast = $stmt->fetch();
                     <a href="columns.php" class="hidden sm:inline-block text-xs font-bold uppercase tracking-widest text-navy hover:text-red">View All &rarr;</a>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                    
-                    <!-- Col 1 -->
-                    <a href="politics.php" class="group block">
-                        <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
-                            <img src="images/politics.png" alt="Politics" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red">Politics, Econ. & Current Issues</h4>
-                    </a>
-
-                    <!-- Col 2 -->
-                    <a href="travel.php" class="group block">
-                        <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
-                            <img src="images/travel.png" alt="Travel" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red">Travel & Photography</h4>
-                    </a>
-
-                    <!-- Col 3 -->
-                    <a href="culture.php" class="group block">
-                        <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
-                            <img src="images/culture.png" alt="Heritage" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red">Heritage & Environment</h4>
-                    </a>
-
-                    <!-- Col 4 -->
-                    <a href="food.php" class="group block relative">
+                    <?php 
+                    $col_images = ['images/politics.png', 'images/travel.png', 'images/culture.png', 'images/lifestyle.png', 'images/hero.png'];
+                    foreach($homepage_categories as $index => $cat): 
+                        $img = isset($col_images[$index]) ? $col_images[$index] : 'images/politics.png';
+                    ?>
+                    <a href="category.php?slug=<?= htmlspecialchars($cat['slug']) ?>" class="group block relative">
+                        <?php if ($index === 3): ?>
                         <div class="absolute top-2 left-2 bg-gold text-paper text-[9px] uppercase font-bold px-2 py-1 z-10 shadow-sm tracking-widest">Monthly Special</div>
+                        <?php endif; ?>
                         <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
-                            <img src="images/lifestyle.png" alt="Food Recipes" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
+                            <img src="<?= $img ?>" alt="Column Image" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
                         </div>
-                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red">Food Recipes</h4>
+                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red"><?= htmlspecialchars($cat['name']) ?></h4>
                     </a>
-
-                    <!-- Col 5 -->
-                    <a href="sports.php" class="group block">
-                        <div class="aspect-[4/3] w-full bg-light mb-4 overflow-hidden border border-gray-300 shadow-sm">
-                            <img src="images/hero.png" alt="Sports" class="w-full h-full object-cover p-1 transform group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red">Sports & Wellness</h4>
-                    </a>
-
+                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
