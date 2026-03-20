@@ -52,6 +52,14 @@ if ($action === 'edit' && isset($_GET['id'])) {
     if (!$edit_issue) $action = 'list';
 }
 
+// Handle delete action
+if ($action === 'delete' && isset($_GET['id'])) {
+    $stmt = $pdo->prepare("DELETE FROM issues WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $message = "Issue deleted successfully.";
+    $action = 'list';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'edit') {
     $id = $_POST['id'];
     $title = $_POST['title'];
@@ -136,7 +144,10 @@ $issues = $stmt->fetchAll();
             
             <div class="border-t border-gray-200 pt-3 text-[10px] font-bold uppercase tracking-widest flex justify-between">
                 <a href="../<?= htmlspecialchars($issue['pdf_file']) ?>" target="_blank" class="text-navy hover:text-red">View File</a>
-                <a href="?action=edit&id=<?= $issue['id'] ?>" class="text-navy hover:text-red">Edit</a>
+                <div class="space-x-1 border-l border-gray-200 pl-2 ml-1 flex-shrink-0">
+                    <a href="?action=edit&id=<?= $issue['id'] ?>" class="text-navy hover:text-red">Edit</a> | 
+                    <a href="?action=delete&id=<?= $issue['id'] ?>" onclick="return confirm('Are you sure you want to delete this issue?');" class="text-red hover:text-navy">Del</a>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>

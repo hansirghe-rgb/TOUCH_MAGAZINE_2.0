@@ -43,6 +43,14 @@ if ($action === 'edit' && isset($_GET['id'])) {
     if (!$edit_article) $action = 'list';
 }
 
+// Handle delete action
+if ($action === 'delete' && isset($_GET['id'])) {
+    $stmt = $pdo->prepare("DELETE FROM articles WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $message = "Article deleted successfully.";
+    $action = 'list';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'edit') {
     $id = $_POST['id'];
     $category_id = $_POST['category_id'];
@@ -135,7 +143,7 @@ $categories = $stmt->fetchAll();
                 </td>
                 <td class="p-4 text-right space-x-2">
                     <a href="?action=edit&id=<?= $article['id'] ?>" class="text-[10px] uppercase tracking-widest text-navy hover:text-red font-bold">Edit</a>
-                    <!-- Del currently not wired robustly in this quick iteration, focused on Edit -->
+                    <a href="?action=delete&id=<?= $article['id'] ?>" onclick="return confirm('Are you sure you want to delete this article?');" class="text-[10px] uppercase tracking-widest text-red hover:text-navy font-bold">Del</a>
                 </td>
             </tr>
             <?php endforeach; ?>

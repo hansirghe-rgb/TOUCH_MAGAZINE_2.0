@@ -73,6 +73,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'new') {
     }
 }
 
+if ($action === 'delete' && isset($_GET['id'])) {
+    $stmt = $pdo->prepare("DELETE FROM podcasts WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $message = "Broadcast deleted successfully.";
+    $action = 'list';
+}
+
 // Fetch all podcasts
 $stmt = $pdo->query("SELECT * FROM podcasts ORDER BY id DESC");
 $podcasts = $stmt->fetchAll();
@@ -120,8 +127,9 @@ $podcasts = $stmt->fetchAll();
             </div>
             <p class="text-[10px] font-bold uppercase tracking-widest text-navy/50 mb-4">Duration: <?= htmlspecialchars($podcast['duration'] ?: '--:--') ?></p>
             
-            <div class="border-t border-gray-200 pt-3 text-[10px] font-bold uppercase tracking-widest text-right">
+            <div class="border-t border-gray-200 pt-3 text-[10px] font-bold uppercase tracking-widest flex justify-between">
                 <a href="?action=edit&id=<?= $podcast['id'] ?>" class="text-navy hover:text-red">Edit Broadcast</a>
+                <a href="?action=delete&id=<?= $podcast['id'] ?>" onclick="return confirm('Confirm deletion of this broadcast?');" class="text-red hover:text-navy">Del</a>
             </div>
         </div>
     <?php endforeach; ?>
