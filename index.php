@@ -243,6 +243,7 @@ $homepage_categories = $stmt->fetchAll();
                     <a href="columns.php" class="hidden sm:inline-block text-xs font-bold uppercase tracking-widest text-navy hover:text-red">View All &rarr;</a>
                 </div>
                 
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                     <?php 
                     $col_images = ['images/politics.png', 'images/travel.png', 'images/culture.png', 'images/lifestyle.png', 'images/hero.png'];
                     foreach($homepage_categories as $index => $cat): 
@@ -258,6 +259,7 @@ $homepage_categories = $stmt->fetchAll();
                         <h4 class="font-sans text-sm font-black uppercase tracking-widest text-navy group-hover:text-red"><?= htmlspecialchars($cat['name']) ?></h4>
                     </a>
                     <?php endforeach; ?>
+                </div>
                 </div>
             </div>
         </section>

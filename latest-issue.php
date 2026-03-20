@@ -1,3 +1,14 @@
+<?php
+require_once 'config/database.php';
+
+$stmt = $pdo->query("SELECT * FROM issues WHERE is_latest = 1 ORDER BY id DESC LIMIT 1");
+$issue = $stmt->fetch();
+
+if (!$issue) {
+    $stmt = $pdo->query("SELECT * FROM issues ORDER BY id DESC LIMIT 1");
+    $issue = $stmt->fetch();
+}
+?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -41,13 +52,6 @@
                 <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Digital Archive</span>
                 <h1 class="font-serif text-5xl md:text-7xl font-black text-navy">The Latest Issue</h1>
             </div>
-            <div class="mt-8 md:mt-0 flex flex-col items-start md:items-end">
-                <p class="text-xs font-bold uppercase tracking-widest text-navy/50 mb-2">Editor Protocol</p>
-                <label for="issue-upload" class="cursor-pointer border border-navy text-navy px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-navy hover:text-paper transition-colors">
-                    Upload New Magazine Issue
-                </label>
-                <input type="file" id="issue-upload" accept="image/*" class="hidden">
-            </div>
         </div>
     </header>
 
@@ -57,28 +61,22 @@
                 
                 <div class="fade-up relative">
                     <div class="aspect-[3/4] w-full max-w-md mx-auto bg-light overflow-hidden shadow-lg border border-gray-300 p-2 relative z-10">
-                        <img id="featured-issue-cover" src="images/politics.png" class="w-full h-full object-cover">
+                        <img id="featured-issue-cover" src="<?= $issue ? htmlspecialchars($issue['cover_image']) : 'images/politics.png' ?>" class="w-full h-full object-cover">
                     </div>
                 </div>
 
                 <div class="fade-up pt-10 md:pt-0">
-                    <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Volume 01 &bull; August 2026</span>
-                    <h2 class="font-serif text-4xl md:text-5xl font-black text-navy mb-6 leading-tight">The Urban Renaissance</h2>
-                    <p class="text-navy/70 text-lg font-medium leading-relaxed mb-8">This month, we unpack the economic shifts driving Colombo's transformation, explore untouched valleys in the highlands, and delve into the preservation of ancient Anuradhapura.</p>
-                    
-                    <ul class="space-y-4 mb-10 border-y border-gray-300 py-6">
-                        <li class="flex justify-between font-bold text-sm text-navy uppercase tracking-widest">
-                            <span>Economic Reforms</span> <span class="text-navy/40">pg 14</span>
-                        </li>
-                        <li class="flex justify-between font-bold text-sm text-navy uppercase tracking-widest">
-                            <span>Central Highlands</span> <span class="text-navy/40">pg 32</span>
-                        </li>
-                        <li class="flex justify-between font-bold text-sm text-navy uppercase tracking-widest">
-                            <span>Anuradhapura Tech</span> <span class="text-navy/40">pg 48</span>
-                        </li>
-                    </ul>
-
-                    <button class="bg-navy text-paper px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-red transition-colors shadow-none border border-navy w-full sm:w-auto">Open Flipbook Edition</button>
+                    <?php if ($issue): ?>
+                        <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Edition <?= str_pad($issue['id'], 2, '0', STR_PAD_LEFT) ?> &bull; <?= htmlspecialchars($issue['issue_month']) ?> <?= htmlspecialchars($issue['issue_year']) ?></span>
+                        <h2 class="font-serif text-4xl md:text-5xl font-black text-navy mb-6 leading-tight"><?= htmlspecialchars($issue['title']) ?></h2>
+                        <p class="text-navy/70 text-lg font-medium leading-relaxed mb-8"><?= nl2br(htmlspecialchars($issue['description'] ?? '')) ?></p>
+                        
+                        <a href="<?= htmlspecialchars($issue['pdf_file']) ?>" target="_blank" class="bg-navy text-paper px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-red transition-colors shadow-none border border-navy w-full sm:w-auto inline-block text-center">Open Flipbook Edition</a>
+                    <?php else: ?>
+                        <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Notice</span>
+                        <h2 class="font-serif text-4xl md:text-5xl font-black text-navy mb-6 leading-tight">No Edition Available</h2>
+                        <p class="text-navy/70 text-lg font-medium leading-relaxed mb-8">Please check back later. Our editorial board is finalizing the upcoming issue.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
