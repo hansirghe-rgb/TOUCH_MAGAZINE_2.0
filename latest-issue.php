@@ -30,7 +30,7 @@ if (!$issue) {
     <nav class="bg-paper border-b border-gray-300 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center h-20">
             <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
-                The Touch <span class="text-red ml-2 relative -top-2 text-4xl leading-none">.</span>
+                <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-8 md:h-10 w-auto object-contain">
             </a>
             <div class="hidden lg:flex space-x-8 items-center text-xs font-bold uppercase tracking-widest text-navy">
                 <a href="index.php" class="hover:text-red transition-colors py-1">Home</a>
