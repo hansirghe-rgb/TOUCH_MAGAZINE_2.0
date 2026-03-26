@@ -146,10 +146,6 @@ $homepage_categories = $stmt->fetchAll();
                 <p class="text-navy/80 text-lg md:text-xl font-medium leading-relaxed mb-10 max-w-xl">
                     <?= htmlspecialchars($hero_text) ?>
                 </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="latest-issue.php" class="bg-navy text-paper px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-red transition-colors">Open Flipbook Edition</a>
-                    <a href="columns.php" class="border border-navy text-navy px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-navy hover:text-paper transition-colors bg-paper">View Columns</a>
-                </div>
             </div>
 
             <!-- Podcast Video Placed in Hero (Right side) -->
@@ -361,11 +357,9 @@ $homepage_categories = $stmt->fetchAll();
             </div>
 
             <!-- RGHE Logo Portal -->
-            <div class="col-span-1 bg-paper/5 p-6 border border-paper/10 flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div class="col-span-1 flex flex-col items-center sm:items-start text-center sm:text-left">
                 <span class="text-[10px] items-center sm:items-start font-bold tracking-widest uppercase text-paper/50 mb-4 block"><?= htmlspecialchars($partner_text) ?></span>
-                <div class="bg-paper p-3 w-40 h-24 mb-4 flex items-center justify-center relative shadow-inner">
-                    <img id="campus-logo" src="<?= htmlspecialchars($logo_path) ?>" alt="RGHE Campus Logo" class="max-h-full max-w-full object-contain opacity-50 transition-opacity duration-300">
-                </div>
+                <img id="campus-logo" src="<?= htmlspecialchars($logo_path) ?>" alt="Partner Logo" class="w-40 h-auto object-contain opacity-90 transition-opacity duration-300 hover:opacity-100">
             </div>
 
         </div>
