@@ -13,14 +13,14 @@ foreach ($ite as $file) {
         // Replace the Top Header Logo (Regex fixed to just match the outer span block reliably)
         $pattern_header = '/The Touch <span class="text-red[^>]*?-top-2[^>]*?>\.<\/span>/m';
         if (preg_match($pattern_header, $content)) {
-            $content = preg_replace($pattern_header, '<img src="images/touch_logo.png" alt="The Touch Magazine" class="h-8 md:h-10 w-auto object-contain">', $content);
+            $content = preg_replace($pattern_header, '<img src="images/touch_logo.png" alt="The Touch Magazine" class="h-20 md:h-24 lg:h-28 w-auto object-contain mix-blend-multiply transform scale-125 origin-left">', $content);
             $modified = true;
         }
 
         // Replace the Footer Logo
         $pattern_footer = '/The Touch <span class="text-red[^>]*?-top-1[^>]*?>\.<\/span>/m';
         if (preg_match($pattern_footer, $content)) {
-            $content = preg_replace($pattern_footer, '<img src="images/touch_logo.png" alt="The Touch Magazine" class="h-6 md:h-8 w-auto object-contain">', $content);
+            $content = preg_replace($pattern_footer, '<img src="images/touch_logo.png" alt="The Touch Magazine" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply transform scale-125 origin-left">', $content);
             $modified = true;
         }
 

@@ -94,7 +94,7 @@ $homepage_categories = $stmt->fetchAll();
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
-                    <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-8 md:h-10 w-auto object-contain">
+                    <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-20 md:h-24 lg:h-28 w-auto object-contain mix-blend-multiply transform scale-125 origin-left">
                 </a>
                 
                 <!-- Desktop Menu -->
@@ -338,7 +338,7 @@ $homepage_categories = $stmt->fetchAll();
             <!-- Brand -->
             <div class="col-span-1 lg:col-span-1">
                 <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-paper uppercase flex items-center mb-6">
-                    <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-6 md:h-8 w-auto object-contain">
+                    <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply transform scale-125 origin-left">
                 </a>
                 <p class="text-paper/70 text-sm leading-relaxed mb-6 font-medium">A modern news magazine delivering premium journalism, launched out of Colombo, Sri Lanka.</p>
                 <a href="contact.php" class="text-[10px] font-bold uppercase tracking-widest hover:text-red transition-colors flex items-center">Contact Editorial <span class="ml-1">&rarr;</span></a>
