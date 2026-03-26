@@ -121,46 +121,7 @@ $homepage_categories = $stmt->fetchAll();
         </div>
     </div>
 
-    <!-- PODCASTS SECTION -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-20 fade-up bg-light w-full border-b border-gray-300">
-        <h2 class="font-serif text-4xl font-black text-navy mb-8 news-line-thick pt-4">The Touch Podcasts</h2>
-        
-        <div class="p-8 bg-paper border border-gray-300 shadow-lg grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative overflow-hidden">
-            
-            <div>
-                <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Studio Series</span>
-                <h3 class="font-serif text-3xl md:text-5xl font-bold text-navy mb-6 leading-tight"><?= $latest_podcast ? htmlspecialchars($latest_podcast['title']) : 'Live From Colombo' ?></h3>
-                <p class="text-navy/80 font-medium mb-8 leading-relaxed"><?= $latest_podcast && $latest_podcast['description'] ? nl2br(htmlspecialchars($latest_podcast['description'])) : 'Interviews with newsmakers, politicians, and cultural icons. Watch our fully structured video broadcasts directly embedded on our platform.' ?></p>
-                <a href="podcasts.php" class="inline-block border border-navy text-navy bg-light px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-navy hover:text-paper transition-colors">View All Episodes</a>
-            </div>
-            
-            <!-- Video Mini Player -->
-            <div class="w-full aspect-video bg-navy relative border border-gray-300 group shadow-sm z-10">
-                <?php if ($latest_podcast && $latest_podcast['video_url']): ?>
-                    <?php
-                        $vid_url = $latest_podcast['video_url'];
-                        // Simple embed detection logic
-                        if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
-                            // Assume they pasted an embeddable URL or frame it (production code might parse out video IDs)
-                    ?>
-                        <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    <?php else: ?>
-                        <video controls class="w-full h-full pointer-events-auto object-cover" poster="<?= htmlspecialchars($latest_podcast['thumbnail_path'] ?: 'images/politics.png') ?>">
-                            <source src="<?= htmlspecialchars($vid_url) ?>" type="video/mp4">
-                        </video>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <img src="<?= $latest_podcast && $latest_podcast['thumbnail_path'] ? htmlspecialchars($latest_podcast['thumbnail_path']) : 'images/politics.png' ?>" alt="Podcast Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
-                    <!-- Play icon -->
-                    <a href="podcasts.php" class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-16 h-16 bg-paper text-navy flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
-                        </div>
-                    </a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Hero Section -->
     <header class="relative min-h-[90vh] w-full overflow-hidden flex items-center bg-light border-b border-gray-300">
@@ -191,27 +152,42 @@ $homepage_categories = $stmt->fetchAll();
                 </div>
             </div>
 
-            <!-- Featured Issue Card (Right side) -->
-            <div class="lg:col-span-5 fade-up">
-                <!-- Softer Editorial Card Style -->
-                <div class="bg-paper border border-gray-300 p-4 sm:p-5 shadow-lg relative">
+            <!-- Podcast Video Placed in Hero (Right side) -->
+            <div class="lg:col-span-5 fade-up flex flex-col justify-center">
+                <div class="bg-paper border border-gray-300 p-4 shadow-lg relative">
                     <div class="flex items-start justify-between mb-4 border-b border-gray-300 pb-3 gap-2">
                         <div>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-navy/60 mb-1"><?= htmlspecialchars($latest_issue['issue_month']) ?> <?= htmlspecialchars($latest_issue['issue_year']) ?></p>
-                            <h3 class="font-serif text-2xl font-bold text-navy"><?= htmlspecialchars($latest_issue['title']) ?></h3>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-red flex items-center mb-1"><span class="w-4 h-px bg-red mr-2"></span>The Touch Studios</span>
+                            <h3 class="font-serif text-2xl font-bold text-navy leading-tight"><?= $latest_podcast ? htmlspecialchars($latest_podcast['title']) : 'Latest Broadcast' ?></h3>
                         </div>
-                        <div class="bg-red text-paper text-[9px] uppercase font-bold tracking-widest px-2 py-1 shadow-sm shrink-0">Premium Edition</div>
+                        <div class="bg-navy text-paper text-[9px] uppercase font-bold tracking-widest px-2 py-1 shadow-sm shrink-0">Live</div>
                     </div>
                     
-                    <div class="w-full aspect-[3/4] overflow-hidden bg-light hover-zoom border border-gray-200">
-                        <img id="featured-issue-cover" src="<?= htmlspecialchars($latest_issue['cover_image']) ?>" alt="Current Issue Cover" class="w-full h-full object-cover">
+                    <div class="w-full aspect-video bg-navy relative border border-gray-200 group shadow-sm z-10 hover-zoom">
+                        <?php if ($latest_podcast && $latest_podcast['video_url']): ?>
+                            <?php
+                                $vid_url = $latest_podcast['video_url'];
+                                if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
+                            ?>
+                                <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <?php else: ?>
+                                <video controls class="w-full h-full pointer-events-auto object-cover" poster="<?= htmlspecialchars($latest_podcast['thumbnail_path'] ?: 'images/politics.png') ?>">
+                                    <source src="<?= htmlspecialchars($vid_url) ?>" type="video/mp4">
+                                </video>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <img src="<?= $latest_podcast && $latest_podcast['thumbnail_path'] ? htmlspecialchars($latest_podcast['thumbnail_path']) : 'images/politics.png' ?>" alt="Podcast Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
+                            <a href="podcasts.php" class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-16 h-16 bg-paper text-navy flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+                                </div>
+                            </a>
+                        <?php endif; ?>
                     </div>
                     
-                    <div class="mt-4 pt-4 border-t border-gray-300 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
-                        <a href="latest-issue.php" class="text-navy hover:text-red flex items-center">
-                            Open Flipbook Edition
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                        </a>
+                    <div class="mt-4 border-t border-gray-300 pt-3 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                        <span class="text-navy/50">Runtime: <?= $latest_podcast ? htmlspecialchars($latest_podcast['duration']) : '--:--' ?></span>
+                        <a href="podcasts.php" class="text-navy hover:text-red">View All Episodes &rarr;</a>
                     </div>
                 </div>
             </div>
@@ -220,6 +196,39 @@ $homepage_categories = $stmt->fetchAll();
     </header>
 
     <main class="bg-light relative">
+
+        <!-- MAGAZINE PORTAL SECTION -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-8 py-20 fade-up border-b border-gray-300">
+            <div class="flex items-center mb-8 news-line pt-4 border-gray-300">
+                <h2 class="font-serif text-4xl font-black text-navy mr-6">Latest Digital Edition</h2>
+            </div>
+            
+            <div class="bg-paper border border-gray-300 shadow-md p-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative overflow-hidden">
+                <div class="absolute -right-40 -bottom-40 opacity-[0.03] pointer-events-none">
+                    <h3 class="font-sans font-black text-[20rem] leading-none text-navy">ISSUE</h3>
+                </div>
+                
+                <div class="relative z-10 w-full sm:w-2/3 mx-auto md:w-full max-w-[300px]">
+                    <a href="<?= htmlspecialchars($latest_issue['pdf_file']) ?>" target="_blank" class="block aspect-[3/4] overflow-hidden bg-light hover-zoom border border-gray-200 shadow-xl group">
+                        <img id="featured-issue-cover" src="<?= htmlspecialchars($latest_issue['cover_image']) ?>" alt="Current Issue Cover" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                    </a>
+                </div>
+                
+                <div class="relative z-10">
+                    <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block inline-block border-b-2 border-red pb-1">Vol. <?= htmlspecialchars($latest_issue['id']) ?></span>
+                    <h3 class="font-serif text-3xl md:text-5xl font-bold text-navy mb-4 leading-tight group-hover:text-red transition-colors"><?= htmlspecialchars($latest_issue['title']) ?></h3>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-navy/60 mb-6 flex items-center">
+                        <svg class="w-3 h-3 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                        Published <?= htmlspecialchars($latest_issue['issue_month']) ?> <?= htmlspecialchars($latest_issue['issue_year']) ?>
+                    </p>
+                    <p class="text-navy/80 font-medium mb-8 leading-relaxed max-w-lg"><?= nl2br(htmlspecialchars($latest_issue['description'] ?? 'Discover our latest features, exclusive columns, and in-depth photography. Click to open the fully immersive HTML flipbook edition.')) ?></p>
+                    <div class="flex gap-4 items-center">
+                        <a href="<?= htmlspecialchars($latest_issue['pdf_file']) ?>" target="_blank" class="inline-block bg-navy text-paper px-6 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-red transition-colors shadow-md">Open Flipbook</a>
+                        <a href="latest-issue.php" class="text-[10px] font-bold uppercase tracking-widest text-navy hover:text-red transition-colors">Digital Archive &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- LATEST ARTICLES GRID (News look) -->
         <section class="max-w-7xl mx-auto px-4 sm:px-8 py-20 fade-up">
