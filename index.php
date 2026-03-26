@@ -132,8 +132,8 @@ $homepage_categories = $stmt->fetchAll();
     <header class="relative min-h-[90vh] w-full overflow-hidden flex items-center bg-light border-b border-gray-300">
         <!-- Background Image (Realistic Colombo Skyline) -->
         <div class="absolute inset-0 z-0 selection:bg-transparent">
-            <!-- Ensure high visibility with object cover while maintaining transparency -->
-            <img src="<?= htmlspecialchars($hero_bg_image) ?>" alt="Colombo City Overview" class="w-full h-full object-cover object-center opacity-30">
+            <!-- Ensure high visibility with object cover -->
+            <img src="<?= htmlspecialchars($hero_bg_image) ?>" alt="Colombo City Overview" class="w-full h-full object-cover object-center">
             <!-- Warmer, lighter gradient overlay -->
             <div class="absolute inset-0 hero-gradient"></div>
         </div>
