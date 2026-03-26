@@ -31,9 +31,13 @@ if(!$latest_issue) {
 $stmt = $pdo->query("SELECT * FROM podcasts WHERE status = 'published' ORDER BY id DESC LIMIT 1");
 $latest_podcast = $stmt->fetch();
 
-// Fetch Top Stories from Articles
-$stmt = $pdo->query("SELECT a.*, c.name as category_name, c.slug as category_slug FROM articles a LEFT JOIN categories c ON a.category_id = c.id WHERE a.status = 'published' AND a.is_featured = 1 ORDER BY a.publish_date DESC, a.id DESC LIMIT 3");
+// Fetch Top Stories from Articles (Main Article)
+$stmt = $pdo->query("SELECT a.*, c.name as category_name, c.slug as category_slug FROM articles a LEFT JOIN categories c ON a.category_id = c.id WHERE a.status = 'published' AND a.is_featured = 1 ORDER BY a.publish_date DESC, a.id DESC LIMIT 1");
 $top_stories = $stmt->fetchAll();
+
+// Fetch Editor's Picks for simple headlines
+$stmt = $pdo->query("SELECT a.*, c.name as category_name, c.slug as category_slug FROM articles a LEFT JOIN categories c ON a.category_id = c.id WHERE a.status = 'published' AND a.is_editor_pick = 1 ORDER BY a.publish_date DESC, a.id DESC LIMIT 5");
+$editor_picks = $stmt->fetchAll();
 
 // Fetch Columns (Categories) for Showcase
 $stmt = $pdo->query("SELECT * FROM categories ORDER BY name ASC LIMIT 5");
@@ -254,22 +258,23 @@ $homepage_categories = $stmt->fetchAll();
                     </a>
                 </div>
 
-                <!-- Secondary Stories Area -->
-                <div class="md:col-span-5 lg:col-span-4 flex flex-col gap-8 md:pl-8 md:border-l border-gray-300">
-                    <?php for($i = 1; $i < count($top_stories); $i++): 
-                        $sub_story = $top_stories[$i];
-                    ?>
-                        <div class="group hover-zoom <?= $i === 1 && count($top_stories) > 2 ? 'border-b border-gray-300 pb-8' : '' ?>">
-                            <a href="article.php?id=<?= $sub_story['id'] ?>" class="block">
-                                <span class="text-red font-bold text-[10px] uppercase tracking-widest block mb-2"><?= htmlspecialchars($sub_story['category_name']) ?></span>
-                                <h4 class="font-serif text-2xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2"><?= htmlspecialchars($sub_story['title']) ?></h4>
-                                <?php if ($i !== 1 && $sub_story['subtitle']): ?>
-                                    <p class="text-navy/80 text-sm mb-2 font-medium"><?= htmlspecialchars($sub_story['subtitle']) ?></p>
-                                <?php endif; ?>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By <?= htmlspecialchars($sub_story['author_name']) ?></span>
-                            </a>
-                        </div>
-                    <?php endfor; ?>
+                <!-- Editor's Picks Area (Clickable Headlines) -->
+                <div class="md:col-span-5 lg:col-span-4 flex flex-col md:pl-8 md:border-l border-gray-300">
+                    <h3 class="font-sans font-black text-xs uppercase tracking-widest text-red mb-6 border-b border-gray-300 pb-2">Editor's Picks</h3>
+                    <div class="flex flex-col gap-6">
+                        <?php if (!empty($editor_picks)): ?>
+                            <?php foreach($editor_picks as $ep): ?>
+                                <div class="group border-b border-gray-200 pb-4 last:border-0 hover:bg-paper/50 transition-colors p-2 -mx-2 rounded">
+                                    <a href="article.php?id=<?= $ep['id'] ?>" class="block">
+                                        <span class="text-red font-bold text-[9px] uppercase tracking-widest block mb-1"><?= htmlspecialchars($ep['category_name']) ?></span>
+                                        <h4 class="font-serif text-xl font-bold text-navy group-hover:text-red transition-colors leading-tight"><?= htmlspecialchars($ep['title']) ?></h4>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="text-[10px] uppercase font-bold text-navy/40 border border-gray-200 p-4 bg-paper text-center">No Editor's Picks Available</div>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <?php else: ?>
                     <div class="col-span-full text-center py-10 text-navy/50 font-bold uppercase tracking-widest text-sm border border-gray-300 bg-paper">
