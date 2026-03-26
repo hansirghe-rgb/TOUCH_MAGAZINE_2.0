@@ -2,8 +2,13 @@
 require_once 'config/database.php';
 
 // Fetch Homepage Settings
-$logo_path = get_setting($pdo, 'rghe_logo', 'images/rghe_logo.png');
-$partner_text = get_setting($pdo, 'footer_partner_text', 'Educational Partner RGHE');
+$partner_text = get_setting($pdo, 'footer_partner_text', 'Educational Partners');
+$logos_json = get_setting($pdo, 'partner_logos');
+$partner_logos = $logos_json ? json_decode($logos_json, true) : [];
+if (empty($partner_logos)) {
+    $legacy = get_setting($pdo, 'rghe_logo');
+    $partner_logos = $legacy ? [$legacy] : ['images/rghe_logo.png'];
+}
 $hero_headline = get_setting($pdo, 'hero_headline', 'The Pulse <br><span class="italic font-normal">of</span> Humility.');
 $hero_subheading = get_setting($pdo, 'hero_subheading', 'Inside The City');
 $hero_text = get_setting($pdo, 'hero_text', 'A modern monthly magazine blending insightful journalism with stunning visual storytelling. We decode politics, economy, travel, and culture from our headquarters in Colombo to the world.');
@@ -356,10 +361,14 @@ $homepage_categories = $stmt->fetchAll();
                 </ul>
             </div>
 
-            <!-- RGHE Logo Portal -->
+            <!-- Partner Logos Portal -->
             <div class="col-span-1 flex flex-col items-center sm:items-start text-center sm:text-left">
                 <span class="text-[10px] items-center sm:items-start font-bold tracking-widest uppercase text-paper/50 mb-4 block"><?= htmlspecialchars($partner_text) ?></span>
-                <img id="campus-logo" src="<?= htmlspecialchars($logo_path) ?>" alt="Partner Logo" class="w-40 h-auto object-contain opacity-90 transition-opacity duration-300 hover:opacity-100">
+                <div class="flex flex-wrap gap-4 items-center justify-center sm:justify-start">
+                    <?php foreach($partner_logos as $plogo): ?>
+                        <img src="<?= htmlspecialchars($plogo) ?>" alt="Partner Logo" class="h-12 w-auto object-contain opacity-90 transition-opacity duration-300 hover:opacity-100">
+                    <?php endforeach; ?>
+                </div>
             </div>
 
         </div>

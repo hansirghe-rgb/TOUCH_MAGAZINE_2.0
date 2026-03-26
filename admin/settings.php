@@ -7,18 +7,71 @@ require_once 'includes/header.php';
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handling Logo Upload if provided
-    if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-        $allowed = ['image/jpeg', 'image/png', 'image/svg+xml'];
-        $upload = upload_secure_file($_FILES['logo'], '../uploads/images', $allowed);
-        if ($upload['success']) {
-            $path = str_replace('../', '', $upload['path']); // relative to frontend
-            $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = 'rghe_logo'");
-            $stmt->execute([$path]);
-            $message .= "Logo updated successfully. ";
-        } else {
-            $message .= $upload['error'] . " ";
+    // Initialize partner_logos from DB or fallback
+    $stmt = $pdo->prepare("SELECT setting_value FROM site_settings WHERE setting_key = 'partner_logos'");
+    $stmt->execute();
+    $existing_json = $stmt->fetchColumn();
+    
+    $partner_logos = [];
+    if ($existing_json) {
+        $partner_logos = json_decode($existing_json, true) ?: [];
+    } else {
+        // Fallback to old single logo
+        $stmt = $pdo->prepare("SELECT setting_value FROM site_settings WHERE setting_key = 'rghe_logo'");
+        $stmt->execute();
+        $old_logo = $stmt->fetchColumn();
+        if ($old_logo) $partner_logos = [$old_logo];
+    }
+
+    // Handle delete logo action via POST (using hidden input)
+    if (isset($_POST['delete_logo_index'])) {
+        $del_idx = (int)$_POST['delete_logo_index'];
+        if (isset($partner_logos[$del_idx])) {
+            array_splice($partner_logos, $del_idx, 1);
+            $msg = "Logo deleted. ";
+            $message .= $msg;
         }
+    }
+
+    // Handling Multiple Logo Uploads
+    $uploaded_any = false;
+    if (isset($_FILES['logos']) && is_array($_FILES['logos']['name'])) {
+        $allowed = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
+        
+        foreach ($_FILES['logos']['name'] as $key => $name) {
+            if ($_FILES['logos']['error'][$key] === UPLOAD_ERR_OK) {
+                $file_array = [
+                    'name' => $_FILES['logos']['name'][$key],
+                    'type' => $_FILES['logos']['type'][$key],
+                    'tmp_name' => $_FILES['logos']['tmp_name'][$key],
+                    'error' => $_FILES['logos']['error'][$key],
+                    'size' => $_FILES['logos']['size'][$key]
+                ];
+                $upload = upload_secure_file($file_array, '../uploads/images', $allowed);
+                if ($upload['success']) {
+                    $path = str_replace('../', '', $upload['path']);
+                    $partner_logos[] = $path; // Append new logo
+                    $uploaded_any = true;
+                } else {
+                    $message .= "File $name: " . $upload['error'] . " ";
+                }
+            }
+        }
+    }
+
+    // Save updated logos back to DB
+    if ($uploaded_any || isset($_POST['delete_logo_index'])) {
+        $json_val = json_encode(array_values($partner_logos));
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM site_settings WHERE setting_key = 'partner_logos'");
+        $stmt->execute();
+        if ($stmt->fetchColumn() > 0) {
+            $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = 'partner_logos'");
+            $stmt->execute([$json_val]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value, description) VALUES ('partner_logos', ?, 'JSON Array of partner logos')");
+            $stmt->execute([$json_val]);
+        }
+        if ($uploaded_any) $message .= "New logos added securely. ";
     }
 
     // Handling Background Image Upload
@@ -83,23 +136,33 @@ while ($row = $stmt->fetch()) {
 <form method="POST" action="" enctype="multipart/form-data" class="bg-white p-8 border border-gray-300 shadow-sm max-w-4xl">
     
     <div class="mb-10 pb-8 border-b border-gray-200">
-        <h3 class="font-serif text-xl font-bold text-navy mb-4">Educational Partner Logo (Footer)</h3>
-        <p class="text-xs text-navy/60 font-medium mb-6"><?= htmlspecialchars($settings['rghe_logo']['description']) ?></p>
+        <h3 class="font-serif text-xl font-bold text-navy mb-4">Educational Partner Logos (Footer)</h3>
+        <p class="text-xs text-navy/60 font-medium mb-6">Upload multiple logos to display your partners.</p>
         
-        <div class="flex items-start gap-8">
-            <!-- Current Logo Preview -->
-            <div class="w-48 h-32 bg-light border border-gray-300 flex items-center justify-center p-4">
-                <?php if (!empty($settings['rghe_logo']['setting_value'])): ?>
-                    <img src="../<?= htmlspecialchars($settings['rghe_logo']['setting_value']) ?>" alt="Partner Logo" class="max-w-full max-h-full object-contain">
-                <?php else: ?>
-                    <span class="text-[10px] uppercase font-bold text-navy/40">No Logo</span>
-                <?php endif; ?>
-            </div>
+        <?php
+        $partner_logos = [];
+        if (isset($settings['partner_logos']['setting_value'])) {
+            $partner_logos = json_decode($settings['partner_logos']['setting_value'], true) ?: [];
+        } elseif (isset($settings['rghe_logo']['setting_value']) && !empty($settings['rghe_logo']['setting_value'])) {
+            $partner_logos = [$settings['rghe_logo']['setting_value']];
+        }
+        ?>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <?php foreach ($partner_logos as $idx => $plogo): ?>
+                <div class="relative bg-light border border-gray-300 p-2 h-24 flex items-center justify-center group">
+                    <img src="../<?= htmlspecialchars($plogo) ?>" alt="Partner Logo" class="max-w-full max-h-full object-contain mix-blend-multiply">
+                    <button type="submit" name="delete_logo_index" value="<?= $idx ?>" onclick="return confirm('Remove this logo?');" class="absolute top-0 right-0 bg-red text-paper p-1 text-[9px] uppercase font-bold opacity-0 group-hover:opacity-100 transition-opacity" title="Delete Logo">X</button>
+                </div>
+            <?php endforeach; ?>
+            <?php if (empty($partner_logos)): ?>
+                <div class="col-span-full text-[10px] uppercase font-bold text-navy/40 mb-2">No Logos added yet</div>
+            <?php endif; ?>
+        </div>
             
-            <div class="flex-grow">
-                <label class="block text-xs font-bold tracking-widest uppercase text-navy mb-2">Upload New Logo (.png, .jpg, .svg)</label>
-                <input type="file" name="logo" accept=".png,.jpg,.jpeg,.svg" class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-navy file:text-paper hover:file:bg-red file:transition-colors bg-light border border-gray-300 p-2 cursor-pointer">
-            </div>
+        <div>
+            <label class="block text-xs font-bold tracking-widest uppercase text-navy mb-2">Add New Logos (.png, .jpg, .svg)</label>
+            <input type="file" name="logos[]" accept=".png,.jpg,.jpeg,.svg,.webp" multiple class="block w-full text-sm text-navy file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-navy file:text-paper hover:file:bg-red file:transition-colors bg-light border border-gray-300 p-2 cursor-pointer">
         </div>
     </div>
 
