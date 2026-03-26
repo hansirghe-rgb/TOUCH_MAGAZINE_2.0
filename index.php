@@ -94,7 +94,7 @@ $homepage_categories = $stmt->fetchAll();
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-navy uppercase flex items-center">
-                    <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-20 md:h-24 lg:h-28 w-auto object-contain mix-blend-multiply transform scale-125 origin-left">
+                    The Touch <span class="text-red ml-2 relative -top-2 text-4xl leading-none">.</span>
                 </a>
                 
                 <!-- Desktop Menu -->
@@ -171,7 +171,17 @@ $homepage_categories = $stmt->fetchAll();
                     <div class="w-full aspect-video bg-navy relative border border-gray-200 group shadow-sm z-10 hover-zoom">
                         <?php if ($latest_podcast && $latest_podcast['video_url']): ?>
                             <?php
+
                                 $vid_url = $latest_podcast['video_url'];
+                                if (strpos($vid_url, 'youtube.com/watch?v=') !== false) {
+                                    parse_str(parse_url($vid_url, PHP_URL_QUERY), $vars);
+                                    if(isset($vars['v'])) $vid_url = "https://www.youtube.com/embed/" . $vars['v'];
+                                } elseif (strpos($vid_url, 'youtu.be/') !== false) {
+                                    $vid_url = "https://www.youtube.com/embed/" . ltrim(parse_url($vid_url, PHP_URL_PATH), '/');
+                                } elseif (strpos($vid_url, 'vimeo.com/') !== false && strpos($vid_url, 'player.vimeo') === false) {
+                                    $vid_url = "https://player.vimeo.com/video/" . ltrim(parse_url($vid_url, PHP_URL_PATH), '/');
+                                }
+        
                                 if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
                             ?>
                                 <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -254,7 +264,8 @@ $homepage_categories = $stmt->fetchAll();
                         <?php if ($lead_story['subtitle']): ?>
                             <p class="text-navy/80 mb-4 font-medium leading-relaxed"><?= htmlspecialchars($lead_story['subtitle']) ?></p>
                         <?php endif; ?>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50">By <?= htmlspecialchars($lead_story['author_name']) ?> &bull; <?= date('M d, Y', strtotime($lead_story['publish_date'])) ?></span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-navy/50 block mb-3">By <?= htmlspecialchars($lead_story['author_name']) ?> &bull; <?= date('M d, Y', strtotime($lead_story['publish_date'])) ?></span>
+                        <span class="inline-block mt-2 font-bold uppercase tracking-widest text-xs text-red hover:text-navy transition-colors">Read Full Article &rarr;</span>
                     </a>
                 </div>
 
@@ -267,7 +278,8 @@ $homepage_categories = $stmt->fetchAll();
                                 <div class="group border-b border-gray-200 pb-4 last:border-0 hover:bg-paper/50 transition-colors p-2 -mx-2 rounded">
                                     <a href="article.php?id=<?= $ep['id'] ?>" class="block">
                                         <span class="text-red font-bold text-[9px] uppercase tracking-widest block mb-1"><?= htmlspecialchars($ep['category_name']) ?></span>
-                                        <h4 class="font-serif text-xl font-bold text-navy group-hover:text-red transition-colors leading-tight"><?= htmlspecialchars($ep['title']) ?></h4>
+                                        <h4 class="font-serif text-xl font-bold text-navy group-hover:text-red transition-colors leading-tight mb-2"><?= htmlspecialchars($ep['title']) ?></h4>
+                                        <span class="inline-block font-bold uppercase tracking-widest text-[9px] text-red opacity-80 group-hover:opacity-100 transition-opacity mt-1">Read Full Article &rarr;</span>
                                     </a>
                                 </div>
                             <?php endforeach; ?>
@@ -338,7 +350,7 @@ $homepage_categories = $stmt->fetchAll();
             <!-- Brand -->
             <div class="col-span-1 lg:col-span-1">
                 <a href="index.php" class="font-serif text-3xl font-black tracking-tighter text-paper uppercase flex items-center mb-6">
-                    <img src="images/touch_logo.png" alt="The Touch Magazine" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply transform scale-125 origin-left">
+                    The Touch <span class="text-red ml-1 relative -top-1 text-3xl leading-none">.</span>
                 </a>
                 <p class="text-paper/70 text-sm leading-relaxed mb-6 font-medium">A modern news magazine delivering premium journalism, launched out of Colombo, Sri Lanka.</p>
                 <a href="contact.php" class="text-[10px] font-bold uppercase tracking-widest hover:text-red transition-colors flex items-center">Contact Editorial <span class="ml-1">&rarr;</span></a>
