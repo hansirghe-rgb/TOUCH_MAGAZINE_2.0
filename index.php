@@ -121,7 +121,46 @@ $homepage_categories = $stmt->fetchAll();
         </div>
     </div>
 
-
+    <!-- PODCASTS SECTION -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-20 fade-up bg-light w-full border-b border-gray-300">
+        <h2 class="font-serif text-4xl font-black text-navy mb-8 news-line-thick pt-4">The Touch Podcasts</h2>
+        
+        <div class="p-8 bg-paper border border-gray-300 shadow-lg grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative overflow-hidden">
+            
+            <div>
+                <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Studio Series</span>
+                <h3 class="font-serif text-3xl md:text-5xl font-bold text-navy mb-6 leading-tight"><?= $latest_podcast ? htmlspecialchars($latest_podcast['title']) : 'Live From Colombo' ?></h3>
+                <p class="text-navy/80 font-medium mb-8 leading-relaxed"><?= $latest_podcast && $latest_podcast['description'] ? nl2br(htmlspecialchars($latest_podcast['description'])) : 'Interviews with newsmakers, politicians, and cultural icons. Watch our fully structured video broadcasts directly embedded on our platform.' ?></p>
+                <a href="podcasts.php" class="inline-block border border-navy text-navy bg-light px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-navy hover:text-paper transition-colors">View All Episodes</a>
+            </div>
+            
+            <!-- Video Mini Player -->
+            <div class="w-full aspect-video bg-navy relative border border-gray-300 group shadow-sm z-10">
+                <?php if ($latest_podcast && $latest_podcast['video_url']): ?>
+                    <?php
+                        $vid_url = $latest_podcast['video_url'];
+                        // Simple embed detection logic
+                        if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
+                            // Assume they pasted an embeddable URL or frame it (production code might parse out video IDs)
+                    ?>
+                        <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <?php else: ?>
+                        <video controls class="w-full h-full pointer-events-auto object-cover" poster="<?= htmlspecialchars($latest_podcast['thumbnail_path'] ?: 'images/politics.png') ?>">
+                            <source src="<?= htmlspecialchars($vid_url) ?>" type="video/mp4">
+                        </video>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <img src="<?= $latest_podcast && $latest_podcast['thumbnail_path'] ? htmlspecialchars($latest_podcast['thumbnail_path']) : 'images/politics.png' ?>" alt="Podcast Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
+                    <!-- Play icon -->
+                    <a href="podcasts.php" class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-16 h-16 bg-paper text-navy flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+                        </div>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
 
     <!-- Hero Section -->
     <header class="relative min-h-[90vh] w-full overflow-hidden flex items-center bg-light border-b border-gray-300">
@@ -271,47 +310,6 @@ $homepage_categories = $stmt->fetchAll();
                         </ul>
                     </div>
                     <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-
-        <!-- PODCASTS SECTION -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-8 py-20 fade-up">
-            <h2 class="font-serif text-4xl font-black text-navy mb-8 news-line-thick pt-4">The Touch Podcasts</h2>
-            
-            <div class="p-8 bg-paper border border-gray-300 shadow-lg grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative overflow-hidden">
-                
-                <div>
-                    <span class="text-red font-bold uppercase tracking-widest text-xs mb-4 block">Studio Series</span>
-                    <h3 class="font-serif text-3xl md:text-5xl font-bold text-navy mb-6 leading-tight"><?= $latest_podcast ? htmlspecialchars($latest_podcast['title']) : 'Live From Colombo' ?></h3>
-                    <p class="text-navy/80 font-medium mb-8 leading-relaxed"><?= $latest_podcast && $latest_podcast['description'] ? nl2br(htmlspecialchars($latest_podcast['description'])) : 'Interviews with newsmakers, politicians, and cultural icons. Watch our fully structured video broadcasts directly embedded on our platform.' ?></p>
-                    <a href="podcasts.php" class="inline-block border border-navy text-navy bg-light px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-navy hover:text-paper transition-colors">View All Episodes</a>
-                </div>
-                
-                <!-- Video Mini Player -->
-                <div class="w-full aspect-video bg-navy relative border border-gray-300 group shadow-sm z-10">
-                    <?php if ($latest_podcast && $latest_podcast['video_url']): ?>
-                        <?php
-                            $vid_url = $latest_podcast['video_url'];
-                            // Simple embed detection logic
-                            if (strpos($vid_url, 'youtube.com') !== false || strpos($vid_url, 'vimeo.com') !== false || strpos($vid_url, 'youtu.be') !== false): 
-                                // Assume they pasted an embeddable URL or frame it (production code might parse out video IDs)
-                        ?>
-                            <iframe src="<?= htmlspecialchars($vid_url) ?>" class="w-full h-full border-0 pointer-events-auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        <?php else: ?>
-                            <video controls class="w-full h-full pointer-events-auto object-cover" poster="<?= htmlspecialchars($latest_podcast['thumbnail_path'] ?: 'images/politics.png') ?>">
-                                <source src="<?= htmlspecialchars($vid_url) ?>" type="video/mp4">
-                            </video>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <img src="<?= $latest_podcast && $latest_podcast['thumbnail_path'] ? htmlspecialchars($latest_podcast['thumbnail_path']) : 'images/politics.png' ?>" alt="Podcast Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
-                        <!-- Play icon -->
-                        <a href="podcasts.php" class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-16 h-16 bg-paper text-navy flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
-                            </div>
-                        </a>
-                    <?php endif; ?>
                 </div>
             </div>
         </section>
